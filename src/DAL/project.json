@@ -1,0 +1,18 @@
+{
+	"version": "1.0.0-*",
+	"description": "DAL Class Library",
+	"authors": [ "talis" ],
+	"tags": [ "" ],
+	"projectUrl": "",
+	"licenseUrl": "",
+	"frameworks": {
+		"dnx451": { },
+		"dnxcore50": { }
+	},
+	"dependencies": {
+		"EntityFramework.Core": "7.0.0-rc1-final",
+		"EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
+		"EntityFramework.Relational": "7.0.0-rc1-final",
+		"Model": "1.0.0-*"
+	}
+}
