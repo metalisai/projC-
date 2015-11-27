@@ -1,6 +1,6 @@
-{
+﻿{
 	"version": "1.0.0-*",
-	"description": "Model Class Library",
+	"description": "CustomIdentity Class Library",
 	"authors": [ "talis" ],
 	"tags": [ "" ],
 	"projectUrl": "",
@@ -13,7 +13,7 @@
 		}
 	},
 	"dependencies": {
-		"EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
-		"Microsoft.AspNet.Identity.EntityFramework": "3.0.0-rc1-final"
+		"DAL": "1.0.0-*",
+		"Microsoft.AspNet.Identity": "3.0.0-rc1-final"
 	}
 }

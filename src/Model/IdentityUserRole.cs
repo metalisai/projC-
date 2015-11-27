@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class LendObject : BaseEntity
+    /// <summary>
+    /// Represents the link between a user and a role.
+    /// </summary>
+    public class IdentityUserRole
     {
         public string Name { get; set; }
-        public DateTime Added { get; set; }
     }
 }

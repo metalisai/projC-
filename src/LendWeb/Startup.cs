@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,9 @@ using Model;
 using DAL.Interfaces;
 using DAL;
 using DAL.Repositories;
+using MongoDB.Driver;
+using Microsoft.AspNet.Identity;
+using CustomIdentity;
 
 namespace LendWeb
 {
@@ -41,22 +43,33 @@ namespace LendWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddEntityFramework()
-                .AddSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
-
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>();
 
             services.AddMvc();
 
             // Add application services.
+            services.AddOptions();
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddSingleton<IMongoDBClient, MongoDBClient>();
+
+            services.AddScoped<IUserLoginStore<User>, UserStore>();
+            services.AddScoped<IUserRoleStore<User>, UserStore>();
+            services.AddScoped<IUserClaimStore<User>, UserStore>();
+            services.AddScoped<IUserPasswordStore<User>, UserStore>();
+            services.AddScoped<IUserSecurityStampStore<User>, UserStore>();
+            services.AddScoped<IUserEmailStore<User>, UserStore>();
+            services.AddScoped<IUserLockoutStore<User>, UserStore>();
+            services.AddScoped<IUserPhoneNumberStore<User>, UserStore>();
+            services.AddScoped<IUserTwoFactorStore<User>, UserStore>();
+            services.AddScoped<IUserStore<User>, UserStore>();
+            services.AddScoped<IRoleStore<IdentityRole>, RoleStore>();
+
+            services.AddScoped<IUOW, UOW>();
+
+            services.Configure<MongoDBConnectionSettings>(Configuration.GetSection("MongoDBConnectionSettings"));
+            //services.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,8 +94,9 @@ namespace LendWeb
                     using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                         .CreateScope())
                     {
-                        serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                             .Database.Migrate();
+                        // TODO: what is this?
+                        /*serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
+                             .Database.Migrate();*/
                     }
                 }
                 catch { }

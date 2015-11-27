@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Model
 {
     public class User : IdentityUser
     {
-        [InverseProperty("Lender")]
+        public List<LendObject> LendObjects { get; set; }
         public List<Lending> Lendings { get; set; }
-        [InverseProperty("Borrower")]
-        public List<Lending> Borrowings { get; set; }
+    }
 
-        [InverseProperty("Owner")]
-        public List<LendObject> OwnedObjects { get; set; }
+    public class User2:BaseEntity
+    {
+        public List<LendObject> LendObjects { get; set; }
+        public List<Lending> Lendings { get; set; }
     }
 }

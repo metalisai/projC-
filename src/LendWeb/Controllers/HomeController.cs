@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using DAL.Interfaces;
 
 namespace LendWeb.Controllers
 {
     public class HomeController : Controller
     {
+        private IUserRepository _userrepo;
+
+        public HomeController(IUserRepository userrepo)
+        {
+            _userrepo = userrepo;
+        }
+
         public IActionResult Index()
         {
+            _userrepo.GetUserObjects("Nan");
             return View();
         }
 

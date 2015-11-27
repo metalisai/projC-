@@ -10,19 +10,17 @@ namespace LendWeb.Controllers
 {
     public class LendObjectsController : Controller
     {
-        private ApplicationDbContext _context;
         private IUserRepository _userrepo;
 
-        public LendObjectsController(ApplicationDbContext context, IUserRepository userrepo)
+        public LendObjectsController(IUserRepository userrepo)
         {
-            _context = context;
             _userrepo = userrepo;
         }
-
+        /*
         // GET: LendObjects
         public IActionResult Index()
         {
-            var applicationDbContext = _context.LendObject.Include(l => l.Owner);
+            //var applicationDbContext = _context.LendObject.Include(l => l.User);
             return View(applicationDbContext.ToList());
         }
 
@@ -46,7 +44,7 @@ namespace LendWeb.Controllers
         // GET: LendObjects/Create
         public IActionResult Create()
         {
-            ViewData["OwnerId"] = new SelectList(_context.Users.ToList(), "Id", "Owner");
+            ViewData["UserId"] = new SelectList(_context.Users.ToList(), "Id", "User");
             return View();
         }
 
@@ -61,7 +59,7 @@ namespace LendWeb.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["OwnerId"] = new SelectList(_context.Users.ToList(), "Id", "Owner", lendObject.OwnerId);
+            ViewData["UserId"] = new SelectList(_context.Users.ToList(), "Id", "User", lendObject.UserId);
             return View(lendObject);
         }
 
@@ -78,7 +76,7 @@ namespace LendWeb.Controllers
             {
                 return HttpNotFound();
             }
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Owner", lendObject.OwnerId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);
             return View(lendObject);
         }
 
@@ -93,7 +91,7 @@ namespace LendWeb.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Owner", lendObject.OwnerId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);
             return View(lendObject);
         }
 
@@ -124,6 +122,6 @@ namespace LendWeb.Controllers
             _context.LendObject.Remove(lendObject);
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
+        }*/
     }
 }
