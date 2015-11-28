@@ -11,9 +11,9 @@ namespace CustomIdentity
 {
     public class RoleStore : IRoleStore<IdentityRole>
     {
-        IUOW _uow;
+        IRepositoryProvider _uow;
 
-        public RoleStore(IUOW uow)
+        public RoleStore(IRepositoryProvider uow)
         {
             _uow = uow;
         }

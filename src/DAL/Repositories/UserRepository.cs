@@ -31,6 +31,13 @@ namespace DAL.Repositories
             }
         }
 
+        public void AddUser(User user)
+        {
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var doc = user.ToBsonDocument();
+            collection.InsertOne(doc);
+        }
+
         public void AddUserClaim(User user, IdentityUserClaim identityUserClaim)
         {
             throw new NotImplementedException();
@@ -46,9 +53,22 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
+        public User FindById(string userId)
+        {
+            var collection = _db.GetCollection<User>("Users");
+            return collection.Find(new BsonDocument("_id", new ObjectId(userId))).FirstOrDefault();
+        }
+
+        public User FindById(ObjectId userId)
+        {
+            var collection = _db.GetCollection<User>("Users");
+            return collection.Find(new BsonDocument("_id", userId)).FirstOrDefault();
+        }
+
         public User FindByUserName(string username)
         {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<User>("Users");
+            return collection.Find(new BsonDocument("NormalizedUserName", username.ToUpper())).FirstOrDefault();
         }
 
         public User GetUserByEmail(string email)
@@ -63,7 +83,8 @@ namespace DAL.Repositories
 
         public IList<IdentityUserClaim> GetUserClaims(User user)
         {
-            throw new NotImplementedException();
+            var founduser = FindById(user.Id);
+            return founduser != null ? founduser.Claims.ToList() : new List<IdentityUserClaim>();
         }
 
         public IList<IdentityUserLogin> GetUserLogins(User user)
@@ -73,7 +94,7 @@ namespace DAL.Repositories
 
         public IList<LendObject> GetUserObjects(string userId)
         {
-            var collection = _db.GetCollection<BsonDocument>("Users");
+            /*var collection = _db.GetCollection<BsonDocument>("Users");
 
             LendObject[] l1 = { new LendObject() { Added = DateTime.Now, Name = "manguKala" },
             new LendObject() { Added = DateTime.Now, Name = "manguKala" } };
@@ -84,22 +105,34 @@ namespace DAL.Repositories
             collection.InsertOne(doc);
             //collection.InsertOne(usern2.ToBsonDocument());
 
-            var user = collection/*.Find(new BsonDocument("_id", userId))*/.AsQueryable().FirstOrDefault();
+            var user = collection.Find(new BsonDocument("_id", userId)).AsQueryable().FirstOrDefault();
 
             foreach (var lendobject in user.GetElement("LendObjects").Value.AsBsonArray)
             {
                 Console.WriteLine(lendobject["Name"]);
             }
-            //User usr = GetById(userId);
+            //User usr = GetById(userId);*/
             return new List<LendObject>();
+            //throw new NotImplementedException();
         }
 
         public IList<string> GetUserRoles(User user)
         {
-            throw new NotImplementedException();
+            var founduser = FindById(user.Id);
+            if(founduser != null)
+            {
+                // TODO: probably should not keep roles in an object
+                return founduser.Roles.Select(x => x.Name).ToList();
+            }
+            return new List<string>();
         }
 
         public IList<User> GetUsersForClaim(IdentityUserClaim identityUserClaim)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveUse(User user)
         {
             throw new NotImplementedException();
         }

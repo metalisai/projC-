@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Interfaces
 {
-    public interface IUOW
+    public interface IRepositoryProvider
     {
         IUserRepository UserRepository { get; }
     }

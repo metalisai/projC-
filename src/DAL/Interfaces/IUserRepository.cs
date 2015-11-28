@@ -26,5 +26,8 @@ namespace DAL.Interfaces
         User GetUserByLogin(string loginProvider, string providerKey);
         User GetUserByEmail(string email);
         IList<User> GetUsersForClaim(IdentityUserClaim identityUserClaim);
+        void AddUser(User user);
+        void RemoveUse(User user);
+        User FindById(string userId);
     }
 }
