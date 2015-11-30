@@ -18,7 +18,7 @@ namespace Model
         /// </remarks>
         public IdentityRole()
         {
-            Id = Guid.NewGuid().ToString();
+            //Id = Guid.NewGuid().ToString();
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace Model
             Name = roleName;
         }
 
-        /// <summary>
+       /* /// <summary>
         /// Navigation property for the users in this role.
         /// </summary>
         public virtual ICollection<IdentityUserRole> Users { get; } = new List<IdentityUserRole>();
-
+        
         /// <summary>
         /// Navigation property for claims in this role.
         /// </summary>
@@ -67,14 +67,14 @@ namespace Model
         /// <summary>
         /// Gets or sets the primary key for this role.
         /// </summary>
-        public virtual TKey Id { get; set; }
+        public virtual TKey Id { get; set; }*/
 
         /// <summary>
         /// Gets or sets the name for this role.
         /// </summary>
         public virtual string Name { get; set; }
 
-        /// <summary>
+        /*/// <summary>
         /// Gets or sets the normalized name for this role.
         /// </summary>
         public virtual string NormalizedName { get; set; }
@@ -91,6 +91,6 @@ namespace Model
         public override string ToString()
         {
             return Name;
-        }
+        }*/
     }
 }

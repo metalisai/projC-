@@ -43,7 +43,13 @@ namespace LendWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentity<User, IdentityRole>();
+            services.AddIdentity<User, IdentityRole>(x =>
+            { x.Password.RequiredLength = 1;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireNonLetterOrDigit = false;
+                x.Password.RequireDigit = false;
+                x.Password.RequireUppercase = false;
+                });
 
             services.AddMvc();
 

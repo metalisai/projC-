@@ -155,7 +155,7 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            Uow.UserRepository.RemoveUse(user);
+            Uow.UserRepository.RemoveUser(user);
             /*try
             {
                 await SaveChanges(cancellationToken);
