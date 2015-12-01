@@ -60,6 +60,7 @@ namespace LendWeb.Controllers
                 BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
             };
             await this._userManager.AddToRoleAsync(user, "Loodrid2");
+            await this._userManager.RemoveFromRoleAsync(user,"Loodrid2");
             return View(model);
         }
 

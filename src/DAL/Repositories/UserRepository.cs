@@ -9,6 +9,7 @@ using Microsoft.Data.Entity;
 
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Reflection;
 
 namespace DAL.Repositories
 {
@@ -57,8 +58,10 @@ namespace DAL.Repositories
         public void AddUserToRole(User user, string roleName)
         {
             // TODO: what if the user doesn't exist?
-            var update = Builders<BsonDocument>.Update.Push("Roles", new IdentityRole { Name = roleName });
+            var role = new IdentityUserRole { Name = roleName };
+            var update = Builders<BsonDocument>.Update.Push("Roles", role);
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument("_id", user.Id), update);
+            user.Roles.Add(role);
         }
 
         public User FindById(string userId)
@@ -161,6 +164,7 @@ namespace DAL.Repositories
             var collection = _db.GetCollection<BsonDocument>("Users");
             var update = Builders<BsonDocument>.Update.Pull<BsonDocument>("Roles", new BsonDocument("Name", roleName));
             collection.UpdateOne(new BsonDocument("_id", user.Id), update);
+            user.Roles.Remove(user.Roles.First(x => x.Name == roleName));
         }
 
         public void RemoveUserLogin(User user, string loginProvider, string providerKey)
@@ -170,6 +174,24 @@ namespace DAL.Repositories
             var filter = Builders<BsonDocument>.Filter.And(builder.Eq("LoginProvider", loginProvider), builder.Eq("ProviderKey", providerKey));
             var update = Builders<BsonDocument>.Update.PullFilter("Logins", filter);
             collection.UpdateOne(new BsonDocument("_id", user.Id), update);
+        }
+
+        public void SetUserField(User user, string fieldName, object value)
+        {
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var update = Builders<BsonDocument>.Update.Set(fieldName, value);
+            collection.UpdateOne(new BsonDocument("_id", user.Id), update);
+
+            var userField = typeof(User).GetProperty(fieldName ,BindingFlags.Public | BindingFlags.Instance);
+            if (userField != null)
+            {
+                userField.SetValue(user, value);
+            }
+            else
+            {
+                Console.WriteLine("Trying to set a field that doesn't exist!");
+                // Log error?
+            }
         }
 
         public void Update(User user)

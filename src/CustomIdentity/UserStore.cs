@@ -81,7 +81,8 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.UserName = userName;
+            Uow.UserRepository.SetUserField(user, "UserName", userName);
+            Uow.UserRepository.SetUserField(user, "NormalizedUserName", userName.ToUpper());
             return Task.FromResult(0);
         }
 
@@ -105,10 +106,11 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
             user.NormalizedUserName = normalizedName;
+            Uow.UserRepository.SetUserField(user, "NormalizedUserName", normalizedName);
             return Task.FromResult(0);
         }
 
-        public async virtual Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -117,14 +119,12 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
             Uow.UserRepository.AddUser(user);
-            // NOTE: save
-            //await SaveChanges(cancellationToken);
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
 
-        public async virtual Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            /*cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (user == null)
             {
@@ -134,19 +134,11 @@ namespace CustomIdentity
             Uow.UserRepository.Update(user);
             //Context.Attach(user);
             user.ConcurrencyStamp = Guid.NewGuid().ToString();
-            //Context.Update(user);
-            /*try
-            {
-                await SaveChanges(cancellationToken);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
-            }*/
-            return IdentityResult.Success;
+            //Context.Update(user);*/
+            return Task.FromResult(IdentityResult.Success); // this does nothing because we don't have transactions
         }
 
-        public async virtual Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -164,14 +156,14 @@ namespace CustomIdentity
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }*/
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
 
-        public virtual async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            return Uow.UserRepository.FindById(userId);
+            return Task.FromResult(Uow.UserRepository.FindById(userId));
         }
 
         public virtual ObjectId ConvertIdFromString(string id)
@@ -192,11 +184,11 @@ namespace CustomIdentity
             return id.ToString();
         }
 
-        public virtual async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            return Uow.UserRepository.FindByUserName(normalizedUserName);
+            return Task.FromResult(Uow.UserRepository.FindByUserName(normalizedUserName));
         }
 
         /// <summary>
@@ -215,7 +207,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.PasswordHash = passwordHash;
+            Uow.UserRepository.SetUserField(user, "PasswordHash", passwordHash);
             return Task.FromResult(0);
         }
 
@@ -236,7 +228,7 @@ namespace CustomIdentity
             return Task.FromResult(user.PasswordHash != null);
         }
 
-        public async virtual Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -254,9 +246,10 @@ namespace CustomIdentity
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Role not found: {0}", roleName));
             }*/
             Uow.UserRepository.AddUserToRole(user, roleName);
+            return Task.FromResult(0);
         }
 
-        public async virtual Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -269,14 +262,15 @@ namespace CustomIdentity
                 throw new ArgumentException("Value cannot be null ot empty: {0}", nameof(roleName));
             }
             Uow.UserRepository.RemoveUserFromRole(user, roleName);
+            return Task.FromResult(0);
         }
 
-        public virtual async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Uow.UserRepository.GetUserRoles(user);
+            return Task.FromResult(Uow.UserRepository.GetUserRoles(user));
         }
 
-        public virtual async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -288,7 +282,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentException("Value cannot be null ot empty: {0}", nameof(roleName));
             }
-            return Uow.UserRepository.GetUserRoles(user).Contains(roleName);
+            return Task.FromResult(Uow.UserRepository.GetUserRoles(user).Contains(roleName));
         }
 
         private void ThrowIfDisposed()
@@ -304,7 +298,7 @@ namespace CustomIdentity
             _disposed = true;
         }
 
-        public async virtual Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
             if (user == null)
@@ -312,7 +306,7 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
             IList <IdentityUserClaim> claims = Uow.UserRepository.GetUserClaims(user);
-            return claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList();
+            return Task.FromResult((IList<Claim>)claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList());
         }
 
         public virtual Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default(CancellationToken))
@@ -333,7 +327,7 @@ namespace CustomIdentity
             return Task.FromResult(false);
         }
 
-        public async virtual Task ReplaceClaimAsync(User user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task ReplaceClaimAsync(User user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
             if (user == null)
@@ -350,9 +344,10 @@ namespace CustomIdentity
             }
 
             Uow.UserRepository.UpdateUserClaims(user, new IdentityUserClaim(claim), new IdentityUserClaim(newClaim));
+            return Task.FromResult(0);
         }
 
-        public async virtual Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
             if (user == null)
@@ -367,6 +362,7 @@ namespace CustomIdentity
             {
                 Uow.UserRepository.RemoveUserClaims(user, new IdentityUserClaim(claim));
             }
+            return Task.FromResult(0);
         }
 
         public virtual Task AddLoginAsync(User user, UserLoginInfo login,
@@ -392,7 +388,7 @@ namespace CustomIdentity
             return Task.FromResult(false);
         }
 
-        public virtual async Task RemoveLoginAsync(User user, string loginProvider, string providerKey,
+        public virtual Task RemoveLoginAsync(User user, string loginProvider, string providerKey,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -409,9 +405,10 @@ namespace CustomIdentity
             {
                 UserLogins.Remove(entry);
             }*/
+            return Task.FromResult(0);
         }
 
-        public async virtual Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -422,16 +419,16 @@ namespace CustomIdentity
             // TODO: Cancellation token??
             IList<IdentityUserLogin> logins =Uow.UserRepository.GetUserLogins((User)user);
             var userId = user.Id;
-            return logins
-                .Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)).ToList();
+            return Task.FromResult((IList<UserLoginInfo>)logins
+                .Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)).ToList());
         }
 
-        public async virtual Task<User> FindByLoginAsync(string loginProvider, string providerKey,
+        public Task<User> FindByLoginAsync(string loginProvider, string providerKey,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            return Uow.UserRepository.GetUserByLogin(loginProvider,providerKey);
+            return Task.FromResult(Uow.UserRepository.GetUserByLogin(loginProvider,providerKey));
         }
 
         public virtual Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
@@ -453,7 +450,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.EmailConfirmed = confirmed;
+            Uow.UserRepository.SetUserField(user, "EmailConfirmed", confirmed);
             return Task.FromResult(0);
         }
 
@@ -465,7 +462,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.Email = email;
+            Uow.UserRepository.SetUserField(user, "Email", email);
             return Task.FromResult(0);
         }
 
@@ -499,15 +496,15 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.NormalizedEmail = normalizedEmail;
+            Uow.UserRepository.SetUserField(user, "NormalizedEmail", normalizedEmail);
             return Task.FromResult(0);
         }
 
-        public virtual async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            return Uow.UserRepository.GetUserByEmail(normalizedEmail);
+            return Task.FromResult(Uow.UserRepository.GetUserByEmail(normalizedEmail));
         }
 
         public virtual Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken = default(CancellationToken))
@@ -529,7 +526,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.LockoutEnd = lockoutEnd;
+            Uow.UserRepository.SetUserField(user, "LockoutEnd", lockoutEnd);
             return Task.FromResult(0);
         }
 
@@ -541,7 +538,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.AccessFailedCount++;
+            Uow.UserRepository.SetUserField(user, "AccessFailedCount", user.AccessFailedCount+1);
             return Task.FromResult(user.AccessFailedCount);
         }
 
@@ -553,7 +550,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.AccessFailedCount = 0;
+            Uow.UserRepository.SetUserField(user, "AccessFailedCount", 0);
             return Task.FromResult(0);
         }
 
@@ -587,7 +584,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.LockoutEnabled = enabled;
+            Uow.UserRepository.SetUserField(user, "LockoutEnabled", enabled);
             return Task.FromResult(0);
         }
 
@@ -599,7 +596,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.PhoneNumber = phoneNumber;
+            Uow.UserRepository.SetUserField(user, "PhoneNumber", phoneNumber);
             return Task.FromResult(0);
         }
 
@@ -633,7 +630,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            user.PhoneNumberConfirmed = confirmed;
+            Uow.UserRepository.SetUserField(user, "PhoneNumberConfirmed", confirmed);
             return Task.FromResult(0);
         }
 
@@ -646,6 +643,7 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
             user.SecurityStamp = stamp;
+            Uow.UserRepository.SetUserField(user, "SecurityStamp", stamp);
             return Task.FromResult(0);
         }
 
@@ -669,6 +667,7 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(user));
             }
             user.TwoFactorEnabled = enabled;
+            Uow.UserRepository.SetUserField(user, "TwoFactorEnabled", enabled);
             return Task.FromResult(0);
         }
 
@@ -683,7 +682,7 @@ namespace CustomIdentity
             return Task.FromResult(user.TwoFactorEnabled);
         }
 
-        public async virtual Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -692,7 +691,7 @@ namespace CustomIdentity
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            return Uow.UserRepository.GetUsersForClaim(new IdentityUserClaim(claim));
+            return Task.FromResult(Uow.UserRepository.GetUsersForClaim(new IdentityUserClaim(claim)));
         }
 
         public async virtual Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default(CancellationToken))
