@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Model;
-using DAL;
-using Microsoft.Data.Entity;
-
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Reflection;

@@ -72,7 +72,7 @@ namespace Model
         /// <summary>
         /// Gets or sets a telephone number for the user.
         /// </summary>
-        public virtual string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Gets or sets a flag indicating if a user has confirmed their telephone address.

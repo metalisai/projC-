@@ -38,14 +38,14 @@ namespace CustomIdentity
             throw new NotImplementedException();
         }
 
-        public async Task<IdentityRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public Task<IdentityRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            return new IdentityRole { Name = normalizedRoleName };
+            return Task.FromResult(new IdentityRole { Name = normalizedRoleName });
         }
 
-        public async Task<string> GetNormalizedRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
         {
-            return role.Name.ToLower();
+            return Task.FromResult(role.Name.ToUpper());
         }
 
         public Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken)
@@ -53,9 +53,9 @@ namespace CustomIdentity
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
         {
-            return role.Name;
+            return Task.FromResult(role.Name);
         }
 
         public Task SetNormalizedRoleNameAsync(IdentityRole role, string normalizedName, CancellationToken cancellationToken)

@@ -13,9 +13,6 @@ namespace Model
         /// <summary>
         /// Initializes a new instance of <see cref="IdentityRole"/>.
         /// </summary>
-        /// <remarks>
-        /// The Id property is initialized to from a new GUID string value.
-        /// </remarks>
         public IdentityRole()
         {
             //Id = Guid.NewGuid().ToString();
@@ -25,9 +22,6 @@ namespace Model
         /// Initializes a new instance of <see cref="IdentityRole"/>.
         /// </summary>
         /// <param name="roleName">The role name.</param>
-        /// <remarks>
-        /// The Id property is initialized to from a new GUID string value.
-        /// </remarks>
         public IdentityRole(string roleName) : this()
         {
             Name = roleName;
@@ -72,7 +66,7 @@ namespace Model
         /// <summary>
         /// Gets or sets the name for this role.
         /// </summary>
-        public virtual string Name { get; set; }
+        public string Name { get; set; }
 
         /*/// <summary>
         /// Gets or sets the normalized name for this role.
