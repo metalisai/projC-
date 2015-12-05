@@ -14,6 +14,14 @@ namespace DAL.Repositories
         IMongoDBClient _client;
         IMongoDatabase _db;
 
+        [Flags]
+        public enum UserInclude
+        {
+            Logins = 0,
+            Claims = 1,
+            Roles = 2
+        }
+
         public UserRepository(IMongoDBClient dbClient)
         {
             _client = dbClient;
@@ -188,13 +196,6 @@ namespace DAL.Repositories
                 Console.WriteLine("Trying to set a field that doesn't exist!");
                 // Log error?
             }
-        }
-
-        public void Update(User user)
-        {
-            // TODO: i don't think this is the smartest idea
-            var collection = _db.GetCollection<User>("Users");
-            collection.ReplaceOne(new BsonDocument("_id", user.Id), user);
         }
 
         public IEnumerable<IdentityUserClaim> UpdateUserClaims(User user, IdentityUserClaim oldclaim, IdentityUserClaim newclaim)

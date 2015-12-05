@@ -25,8 +25,8 @@ namespace DAL
         /// <summary>
         /// Regular constructor for manual use;
         /// </summary>
-        /// <param name="server"></param>
-        /// <param name="database"></param>
+        /// <param name="server">Example: mongodb://localhost:27017</param>
+        /// <param name="database">Example: MyMongoDatabase</param>
         public MongoDBClient(string server, string database) : base(database)
         {
             _databaseName = database;
