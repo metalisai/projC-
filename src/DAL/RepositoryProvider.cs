@@ -12,6 +12,8 @@ namespace DAL
         IMongoDBClient _dbClient;
 
         IUserRepository _userRepo;
+        ILendingRepository _lendingRepo;
+        ILendObjectRepository _lendObjRepo;
 
         public RepositoryProvider(IMongoDBClient dbClient)
         {
@@ -29,6 +31,36 @@ namespace DAL
                 else
                 {
                     return _userRepo;
+                }
+            }
+        }
+
+        public ILendingRepository LendingRepository
+        {
+            get
+            {
+                if (_lendingRepo == null)
+                {
+                    return (_lendingRepo = new LendingRepository(_dbClient));
+                }
+                else
+                {
+                    return _lendingRepo;
+                }
+            }
+        }
+
+        public ILendObjectRepository LendObjectRepository
+        {
+            get
+            {
+                if (_lendObjRepo == null)
+                {
+                    return (_lendObjRepo = new LendObjectRepository(_dbClient));
+                }
+                else
+                {
+                    return _lendObjRepo;
                 }
             }
         }

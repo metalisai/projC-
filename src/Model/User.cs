@@ -7,7 +7,8 @@ namespace Model
 {
     public class User : IdentityUser
     {
-        public List<LendObject> LendObjects { get; set; }
-        public List<Lending> Lendings { get; set; }
+        public List<LendObject> LendObjects { get; set; } = new List<LendObject>();
+        public List<Lending> Lendings { get; set; } = new List<Lending>();
+        public List<Lending> Borrowings { get; set; } = new List<Lending>();
     }
 }

@@ -18,7 +18,6 @@ namespace LendWeb.Controllers
 
         public IActionResult Index()
         {
-            _userrepo.GetUserObjects("Nan");
             return View();
         }
 

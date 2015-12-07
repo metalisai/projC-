@@ -10,7 +10,6 @@ namespace DAL.Interfaces
     public interface IUserRepository
     {
         IList<User> All { get; }
-        IList<LendObject> GetUserObjects(string userId);
         User FindByUserName(string username);
         void AddUserToRole(User user, string roleName);
         void RemoveUserFromRole(User user, string roleName);

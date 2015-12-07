@@ -8,5 +8,7 @@ namespace DAL.Interfaces
     public interface IRepositoryProvider
     {
         IUserRepository UserRepository { get; }
+        ILendingRepository LendingRepository { get; }
+        ILendObjectRepository LendObjectRepository { get; }
     }
 }

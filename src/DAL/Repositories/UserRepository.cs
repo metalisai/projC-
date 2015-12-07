@@ -83,6 +83,7 @@ namespace DAL.Repositories
         public User FindByUserName(string username)
         {
             var collection = _db.GetCollection<User>("Users");
+
             return collection.Find(new BsonDocument("NormalizedUserName", username.ToUpper())).FirstOrDefault();
         }
 
@@ -108,30 +109,6 @@ namespace DAL.Repositories
         {
             var founduser = FindById(user.Id);
             return founduser != null ? founduser.Logins.ToList() : new List<IdentityUserLogin>();
-        }
-
-        public IList<LendObject> GetUserObjects(string userId)
-        {
-            /*var collection = _db.GetCollection<BsonDocument>("Users");
-
-            LendObject[] l1 = { new LendObject() { Added = DateTime.Now, Name = "manguKala" },
-            new LendObject() { Added = DateTime.Now, Name = "manguKala" } };
-
-            var usern = new User2() { LendObjects = l1.ToList() };
-            var usern2 = new User2();
-            var doc = usern.ToBsonDocument();
-            collection.InsertOne(doc);
-            //collection.InsertOne(usern2.ToBsonDocument());
-
-            var user = collection.Find(new BsonDocument("_id", userId)).AsQueryable().FirstOrDefault();
-
-            foreach (var lendobject in user.GetElement("LendObjects").Value.AsBsonArray)
-            {
-                Console.WriteLine(lendobject["Name"]);
-            }
-            //User usr = GetById(userId);*/
-            return new List<LendObject>();
-            //throw new NotImplementedException();
         }
 
         public IList<string> GetUserRoles(User user)
