@@ -11,5 +11,7 @@ namespace DAL.Interfaces
         void LendUserObject(string userId, Lending lending);
         void Remove(string userId, string lendingId);
         void MarkRetured(string userId, string lendingId);
+        IList<Lending> GetUserLendings(string userId);
+        IList<Lending> GetUserBorrowings(string userId);
     }
 }

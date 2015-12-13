@@ -8,51 +8,50 @@
 
 <h2>Lend an object</h2>
 
-<!-- Add new modal -->
-<div class="col-md-12">
-    <label class="radio-inline">
-        <input type="radio" name="optionsRadios" id="optionsRadios1">
-        To an user
-    </label>
-    <label class="radio-inline">
-        <input type="radio" name="optionsRadios" id="optionsRadios2">
-        To a contact
-    </label>
+<div ng-app="">
+    <label>Who would you want to lend your object to?</label>
+    <form>
+        <input id="first" type="radio" name="content" ng-model="borrowerType" value="user"> Other user
+        <br />
+        <input id="other" type="radio" name="content" ng-model="borrowerType" value="contact"> My own contact
+    </form>
+
+    <br />
+
+    <form asp-action="Lend" id="lendUser" ng-show="borrowerType == 'user'" ng-cloak>
+        <div>
+            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="LendToUser"></label>
+                <input asp-for="LendToUser" class="form-control" />
+                <span asp-validation-for="LendToUser" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lend" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form asp-action="Lend" id="lendContact" ng-show="borrowerType == 'contact'" ng-cloak>
+        <div>
+            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <label>Borrower name</label>
+                <input asp-for="LendToName" class="form-control" />
+                <span asp-validation-for="LendToName" class="text-danger" />
+
+                <label>Borrower e-mail</label>
+                <input asp-for="LendToEmail" class="form-control" />
+                <span asp-validation-for="LendToEmail" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lend" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-
-<form asp-action="Lend" id="lendUser">
-    <div>
-        <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="LendToUser"></label>
-            <input asp-for="LendToUser" class="form-control" />
-            <span asp-validation-for="LendToUser" class="text-danger" />
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Lend" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
-
-<form asp-action="Lend" id="lendContact">
-    <div>
-        <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-
-            <label asp-for="LendToName"></label>
-            <input asp-for="LendToName" class="form-control" />
-            <span asp-validation-for="LendToName" class="text-danger" />
-
-            <label asp-for="LendToEmail"></label>
-            <input asp-for="LendToEmail" class="form-control" />
-            <span asp-validation-for="LendToEmail" class="text-danger" />
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Lend" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>

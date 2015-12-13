@@ -44,6 +44,20 @@ namespace DAL.Repositories
             }
         }
 
+        public IList<Lending> GetUserLendings(string userId)
+        {
+            var collection = _db.GetCollection<User>("Users");
+            var ret = collection.Find(x => x.Id == userId).Project(x => x.Lendings).ToList().FirstOrDefault();
+            return ret ?? new List<Lending>();
+        }
+
+        public IList<Lending> GetUserBorrowings(string userId)
+        {
+            var collection = _db.GetCollection<User>("Users");
+            var ret = collection.Find(x => x.Id == userId).Project(x => x.Borrowings).ToList().FirstOrDefault();
+            return ret ?? new List<Lending>();
+        }
+
         public void MarkRetured(string userId, string lendingId)
         {
             throw new NotImplementedException();

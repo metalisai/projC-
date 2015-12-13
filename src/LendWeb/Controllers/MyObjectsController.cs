@@ -29,7 +29,13 @@ namespace LendWeb.Controllers
 
         public IActionResult Index()
         {
-            var vm = new MyObjectsModel { MyObjects = _repos.LendObjectRepository.GetUserObjects(GetUserId()) } ;
+            string userId = GetUserId();
+
+            var vm = new MyObjectsModel {
+                MyObjects = _repos.LendObjectRepository.GetUserObjects(userId),
+                MyLendings = _repos.LendingRepository.GetUserLendings(userId),
+                MyBorrowings = _repos.LendingRepository.GetUserBorrowings(userId),
+            };
             return View(vm);
         }
 
@@ -87,9 +93,9 @@ namespace LendWeb.Controllers
                 return HttpNotFound();
             }
 
-            User otherUser = urepo.FindByUserName(model.LendToUser);
             if (!string.IsNullOrEmpty(model.LendToUser))
             {
+                User otherUser = urepo.FindByUserName(model.LendToUser);
                 if (otherUser != null)
                 {
                     lending.OtherUser = otherUser.Id;

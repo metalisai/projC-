@@ -9,6 +9,11 @@ namespace LendWeb.ViewModels.MyObjects
     public class MyObjectsModel
     {
         public IEnumerable<LendObject> MyObjects{ get; set; }
+
+        public IEnumerable<Lending> MyLendings { get; set; }
+
+        public IEnumerable<Lending> MyBorrowings { get; set; }
+
         public LendObject AddObject { get; set; }
     }
 
