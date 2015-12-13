@@ -11,5 +11,6 @@ namespace DAL.Interfaces
         void Add(string userId, LendObject lo);
         void Remove(string userId, string objectId);
         IList<LendObject> GetUserObjects(string userId);
+        LendObject GetUserObject(string userId, string objectId);
     }
 }

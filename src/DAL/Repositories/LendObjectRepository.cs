@@ -26,10 +26,19 @@ namespace DAL.Repositories
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
         }
 
+        // TODO: use projection
         public IList<LendObject> GetUserObjects(string userId)
         {
             var user = _db.GetCollection<User>("Users").Find(new BsonDocument("_id", new ObjectId(userId))).FirstOrDefault();
             return user.LendObjects ?? new List<LendObject>();
+        }
+
+        // TODO: use projection
+        public LendObject GetUserObject(string userId, string objectId)
+        {
+            var user = _db.GetCollection<User>("Users").Find(new BsonDocument("_id", new ObjectId(userId))).FirstOrDefault();
+            var list = user.LendObjects ?? new List<LendObject>();
+            return list.Where(x => x.Id == objectId).FirstOrDefault();
         }
 
         public void Remove(string userId, string objectId)

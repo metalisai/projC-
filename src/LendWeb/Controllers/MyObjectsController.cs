@@ -55,11 +55,15 @@ namespace LendWeb.Controllers
         [HttpGet]
         public IActionResult Lend(string id)
         {
-            if (id == null)
+            if (id == null || _repos.LendObjectRepository.GetUserObject(GetUserId(), id) == null)
             {
                 return HttpNotFound();
             }
 
+            var model = new LendModel
+            {
+                ObjectId = id
+            };
             
             /*LendObject lendObject = _context.LendObject.Single(m => m.Id == id);
             if (lendObject == null)
@@ -67,60 +71,62 @@ namespace LendWeb.Controllers
                 return HttpNotFound();
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);*/
-            return View("Lend");
+            return View("Lend",model);
         }
 
         [HttpPost]
-        public IActionResult Lend(string id, LendModel model)
+        public IActionResult LendToUser(LendToUserModel model)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(model.ObjectId))
             {
                 return HttpNotFound();
             }
-
-            var lrepo = _repos.LendingRepository;
-            var lorepo = _repos.LendObjectRepository;
-            var urepo = _repos.UserRepository;
-
-            var lending = new Lending
+            if (ModelState.IsValid)
             {
-                //LendObjectId = new MongoDB.Bson.ObjectId()
-            };
 
-            //lrepo.LendUserObject(GetUserId(), lending)
-            if(!lorepo.GetUserObjects(GetUserId()).Any(x => x.Id == id))
-            {
-                return HttpNotFound();
-            }
+                var lrepo = _repos.LendingRepository;
+                var lorepo = _repos.LendObjectRepository;
+                var urepo = _repos.UserRepository;
 
-            if (!string.IsNullOrEmpty(model.LendToUser))
-            {
-                User otherUser = urepo.FindByUserName(model.LendToUser);
-                if (otherUser != null)
+                var lending = new Lending();
+
+                if (lorepo.GetUserObject(GetUserId(),model.ObjectId) == null)
                 {
-                    lending.OtherUser = otherUser.Id;
-                    lending.LendObjectId = id;
-                    lending.LentAt = DateTime.Now;
-                    lending.ExpectedReturn = DateTime.Now.AddDays(7);
-                    lrepo.LendUserObject(GetUserId(), lending);
+                    return HttpNotFound();
                 }
-                else
+
+                if (!string.IsNullOrEmpty(model.LendToUser))
                 {
-                    return View(model);
+                    User otherUser = urepo.FindByUserName(model.LendToUser);
+                    if (otherUser != null)
+                    {
+                        lending.OtherUser = otherUser.Id;
+                        lending.LendObjectId = model.ObjectId;
+                        lending.LentAt = DateTime.Now;
+                        lending.ExpectedReturn = DateTime.Now.AddDays(7);
+                        lrepo.LendUserObject(GetUserId(), lending);
+                        RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("LendToUser", "User " + model.LendToUser + " does'nt exist!");
+
+                        return View("Lend",new LendModel(model) { Borrower = LendModel.BorrowerType.User });
+                    }
                 }
             }
-            else
-            {
+            return View(model);
+        }
 
-            }
-
-            /*LendObject lendObject = _context.LendObject.Single(m => m.Id == id);
-            if (lendObject == null)
+        [HttpPost]
+        public IActionResult LendToContact(LendToContactModel model)
+        {
+            if (string.IsNullOrEmpty(model.ObjectId))
             {
                 return HttpNotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);*/
-            return RedirectToAction("Index");
+            ModelState.AddModelError(string.Empty, "Not implemented!");
+            return View("Lend", new LendModel(model)  { Borrower = LendModel.BorrowerType.Contact });
         }
 
         private string GetUserId()

@@ -11,20 +11,24 @@
 <div ng-app="">
     <label>Who would you want to lend your object to?</label>
     <form>
-        <input id="first" type="radio" name="content" ng-model="borrowerType" value="user"> Other user
+        <!--<input asp-for="Borrower" type="radio" id="User" name="content" ng-model="borrowerType" value="user" />
+        <input asp-for="Borrower" type="radio" id="Contact" name="content" ng-model="borrowerType" value="user" />-->
+        <input id="first" type="radio" name="content" ng-model="borrowerType" value="user" > Other user
         <br />
         <input id="other" type="radio" name="content" ng-model="borrowerType" value="contact"> My own contact
     </form>
 
     <br />
 
-    <form asp-action="Lend" id="lendUser" ng-show="borrowerType == 'user'" ng-cloak>
+    <form asp-action="LendToUser" id="lendUser" ng-show="borrowerType == 'user'" ng-cloak>
         <div>
             <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="LendToUser"></label>
+                <label asp-for="LendToUser"></label> <br />
+                <span asp-validation-for="LendToUser" class="text-danger"></span>
                 <input asp-for="LendToUser" class="form-control" />
-                <span asp-validation-for="LendToUser" class="text-danger" />
+                <input asp-for="ObjectId" type="hidden"/>
+
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
@@ -34,18 +38,19 @@
         </div>
     </form>
 
-    <form asp-action="Lend" id="lendContact" ng-show="borrowerType == 'contact'" ng-cloak>
+    <form asp-action="LendToContact" id="lendContact" ng-show="borrowerType == 'contact'" ng-cloak>
         <div>
             <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
             <div class="form-group">
 
-                <label>Borrower name</label>
+                <label>Borrower name</label> <br />
+                <span asp-validation-for="LendToName" class="text-danger"></span>
                 <input asp-for="LendToName" class="form-control" />
-                <span asp-validation-for="LendToName" class="text-danger" />
-
-                <label>Borrower e-mail</label>
+                <br />
+                <label>Borrower e-mail</label> <br />
+                <span asp-validation-for="LendToEmail" class="text-danger"></span>
                 <input asp-for="LendToEmail" class="form-control" />
-                <span asp-validation-for="LendToEmail" class="text-danger" />
+                <input asp-for="ObjectId" type="hidden" />
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
