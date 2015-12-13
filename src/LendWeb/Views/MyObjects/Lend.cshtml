@@ -11,9 +11,10 @@
 <div ng-app="">
     <label>Who would you want to lend your object to?</label>
     <form>
-        <!--<input asp-for="Borrower" type="radio" id="User" name="content" ng-model="borrowerType" value="user" />
-        <input asp-for="Borrower" type="radio" id="Contact" name="content" ng-model="borrowerType" value="user" />-->
-        <input id="first" type="radio" name="content" ng-model="borrowerType" value="user" > Other user
+        @{var bt = Model.Borrower == LendModel.BorrowerType.User?"user":"contact";}
+        <div ng-init="borrowerType='@bt'" />
+        <div ng-init="initBt='@bt'" />
+        <input id="first" type="radio" name="content" ng-model="borrowerType" value="user"> Other user
         <br />
         <input id="other" type="radio" name="content" ng-model="borrowerType" value="contact"> My own contact
     </form>
@@ -22,7 +23,7 @@
 
     <form asp-action="LendToUser" id="lendUser" ng-show="borrowerType == 'user'" ng-cloak>
         <div>
-            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger" ng-show="borrowerType == initBt"></div>
             <div class="form-group">
                 <label asp-for="LendToUser"></label> <br />
                 <span asp-validation-for="LendToUser" class="text-danger"></span>
@@ -40,7 +41,7 @@
 
     <form asp-action="LendToContact" id="lendContact" ng-show="borrowerType == 'contact'" ng-cloak>
         <div>
-            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger" ng-show="borrowerType == initBt"></div>
             <div class="form-group">
 
                 <label>Borrower name</label> <br />
