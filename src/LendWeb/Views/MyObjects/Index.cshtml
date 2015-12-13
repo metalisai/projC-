@@ -6,11 +6,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Your lendable objects</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <tr>
         <th>
@@ -39,10 +36,10 @@
 </table>
 
 <!-- Trigger the modal with a button -->
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add new</button>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addNewModal">Add new</button>
 
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
+<!-- Add new modal -->
+<div id="addNewModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
             <form asp-action="Create">

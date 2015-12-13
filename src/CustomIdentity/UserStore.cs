@@ -59,7 +59,7 @@ namespace CustomIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            return Task.FromResult(ConvertIdToString(user.Id));
+            return Task.FromResult(user.Id);
         }
 
         public virtual Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken = default(CancellationToken))

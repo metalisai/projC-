@@ -60,6 +60,7 @@ namespace LendWeb
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<IMongoDBClient, MongoDBClient>();
 
+            // TODO: wrap these to identity project somehow
             services.AddScoped<IUserLoginStore<User>, UserStore>();
             services.AddScoped<IUserRoleStore<User>, UserStore>();
             services.AddScoped<IUserClaimStore<User>, UserStore>();

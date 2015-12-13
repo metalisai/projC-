@@ -11,6 +11,8 @@ namespace Model
     public class BaseEntity
     {
         [BsonId(IdGenerator = typeof(BsonObjectIdGenerator))]
-        public ObjectId Id { get; set; }
-    }
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonIgnoreIfDefault]
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+}
 }

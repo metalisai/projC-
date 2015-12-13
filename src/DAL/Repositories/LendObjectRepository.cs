@@ -22,10 +22,6 @@ namespace DAL.Repositories
 
         public void Add(string userId, LendObject lo)
         {
-            if(lo.Id == ObjectId.Empty)
-            {
-                lo.Id = ObjectId.GenerateNewId();
-            }
             var update = Builders<BsonDocument>.Update.Push("LendObjects", lo);
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
         }

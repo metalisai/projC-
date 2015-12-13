@@ -54,14 +54,67 @@ namespace LendWeb.Controllers
                 return HttpNotFound();
             }
 
+            
             /*LendObject lendObject = _context.LendObject.Single(m => m.Id == id);
             if (lendObject == null)
             {
                 return HttpNotFound();
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);*/
-            var vm = new MyObjectsModel { MyObjects = _repos.LendObjectRepository.GetUserObjects(GetUserId()) };
-            return View("Index",vm);
+            return View("Lend");
+        }
+
+        [HttpPost]
+        public IActionResult Lend(string id, LendModel model)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return HttpNotFound();
+            }
+
+            var lrepo = _repos.LendingRepository;
+            var lorepo = _repos.LendObjectRepository;
+            var urepo = _repos.UserRepository;
+
+            var lending = new Lending
+            {
+                //LendObjectId = new MongoDB.Bson.ObjectId()
+            };
+
+            //lrepo.LendUserObject(GetUserId(), lending)
+            if(!lorepo.GetUserObjects(GetUserId()).Any(x => x.Id == id))
+            {
+                return HttpNotFound();
+            }
+
+            User otherUser = urepo.FindByUserName(model.LendToUser);
+            if (!string.IsNullOrEmpty(model.LendToUser))
+            {
+                if (otherUser != null)
+                {
+                    lending.OtherUser = otherUser.Id;
+                    lending.LendObjectId = id;
+                    lending.LentAt = DateTime.Now;
+                    lending.ExpectedReturn = DateTime.Now.AddDays(7);
+                    lrepo.LendUserObject(GetUserId(), lending);
+                }
+                else
+                {
+                    return View(model);
+                }
+            }
+            else
+            {
+
+            }
+
+            /*LendObject lendObject = _context.LendObject.Single(m => m.Id == id);
+            if (lendObject == null)
+            {
+                return HttpNotFound();
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);*/
+            return RedirectToAction("Index");
         }
 
         private string GetUserId()

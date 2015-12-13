@@ -42,7 +42,7 @@ namespace DAL.Repositories
             var collection = _db.GetCollection<BsonDocument>("Users");
             var doc = user.ToBsonDocument();
             collection.InsertOne(doc);
-            user.Id = new ObjectId(doc["_id"].ToString());
+            user.Id = doc["_id"].ToString();
         }
 
         public void AddUserClaim(User user, IdentityUserClaim identityUserClaim)
@@ -159,9 +159,12 @@ namespace DAL.Repositories
 
         public void SetUserField(User user, string fieldName, object value)
         {
-            var collection = _db.GetCollection<BsonDocument>("Users");
-            var update = Builders<BsonDocument>.Update.Set(fieldName, value);
-            collection.UpdateOne(new BsonDocument("_id", user.Id), update);
+            if (!string.IsNullOrEmpty(user.Id))
+            {
+                var collection = _db.GetCollection<BsonDocument>("Users");
+                var update = Builders<BsonDocument>.Update.Set(fieldName, value);
+                collection.UpdateOne(new BsonDocument("_id", user.Id), update);
+            }
 
             var userField = typeof(User).GetProperty(fieldName ,BindingFlags.Public | BindingFlags.Instance);
             if (userField != null)

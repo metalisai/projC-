@@ -23,21 +23,25 @@ namespace DAL.Repositories
         public void LendUserObject(string userId, Lending lending)
         {
             var collection = _db.GetCollection<BsonDocument>("Users");
+            UpdateResult borrowerResult = null;
             if (lending.OtherUser != null)
             {
                 // basically deep clone with 1 field changed
                 var borrowerLending = new Lending();
-                borrowerLending.OtherUser = new ObjectId(userId);
+                borrowerLending.OtherUser = userId;
                 borrowerLending.LentAt = lending.LentAt;
                 borrowerLending.ExpectedReturn = lending.ExpectedReturn;
                 borrowerLending.Returned = lending.Returned;
                 borrowerLending.LendObjectId = lending.LendObjectId;
                 
                 var borrowerupdate = Builders<BsonDocument>.Update.Push("Borrowings", lending);
-                collection.UpdateOne(new BsonDocument("_id", lending.OtherUser), borrowerupdate);
+                borrowerResult = collection.UpdateOne(new BsonDocument("_id", new ObjectId(lending.OtherUser)), borrowerupdate);
             }
-            var update = Builders<BsonDocument>.Update.Push("Lendings", lending);
-            collection.UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
+            if (borrowerResult != null && borrowerResult.ModifiedCount > 0)
+            {
+                var update = Builders<BsonDocument>.Update.Push("Lendings", lending);
+                collection.UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
+            }
         }
 
         public void MarkRetured(string userId, string lendingId)
