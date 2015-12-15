@@ -16,6 +16,8 @@ using DAL.Repositories;
 using MongoDB.Driver;
 using Microsoft.AspNet.Identity;
 using CustomIdentity;
+using BLL;
+using BLL.Interfaces;
 
 namespace LendWeb
 {
@@ -74,6 +76,7 @@ namespace LendWeb
             services.AddScoped<IRoleStore<IdentityRole>, RoleStore>();
 
             services.AddScoped<IRepositoryProvider, RepositoryProvider>();
+            services.AddScoped<ILendingService, LendingService>();
 
             services.Configure<MongoDBConnectionSettings>(Configuration.GetSection("MongoDBConnectionSettings"));
             //services.
