@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using LendWeb.ViewModels.MyObjects;
+using BLL.Interfaces;
 
 namespace LendWeb.Controllers
 {
@@ -19,12 +20,14 @@ namespace LendWeb.Controllers
         private IRepositoryProvider _repos;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ILendingService _lService;
 
-        public MyObjectsController(IRepositoryProvider repos, UserManager<User> um, SignInManager<User> sm)
+        public MyObjectsController(IRepositoryProvider repos, UserManager<User> um, SignInManager<User> sm, ILendingService lService)
         {
             _repos = repos;
             _userManager = um;
             _signInManager = sm;
+            _lService = lService;
         }
 
         public IActionResult Index()
@@ -32,9 +35,9 @@ namespace LendWeb.Controllers
             string userId = GetUserId();
 
             var vm = new MyObjectsModel {
-                MyObjects = _repos.LendObjectRepository.GetUserObjects(userId),
-                MyLendings = _repos.LendingRepository.GetUserLendings(userId),
-                MyBorrowings = _repos.LendingRepository.GetUserBorrowings(userId),
+                MyObjects = _lService.GetUserLendObjects(userId),
+                MyLendings = _lService.GetUserLendings(userId),
+                MyBorrowings = _lService.GetUserBorrowings(userId),
             };
             return View(vm);
         }
@@ -105,7 +108,7 @@ namespace LendWeb.Controllers
                         lending.LentAt = DateTime.Now;
                         lending.ExpectedReturn = DateTime.Now.AddDays(7);
                         lrepo.LendUserObject(GetUserId(), lending);
-                        RedirectToAction("Index");
+                        return RedirectToAction("Index");
                     }
                     else
                     {

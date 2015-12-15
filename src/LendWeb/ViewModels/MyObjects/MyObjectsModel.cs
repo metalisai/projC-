@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using BLL.DTO;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,9 +12,9 @@ namespace LendWeb.ViewModels.MyObjects
     {
         public IEnumerable<LendObject> MyObjects{ get; set; }
 
-        public IEnumerable<Lending> MyLendings { get; set; }
+        public IEnumerable<LendingDTO> MyLendings { get; set; }
 
-        public IEnumerable<Lending> MyBorrowings { get; set; }
+        public IEnumerable<LendingDTO> MyBorrowings { get; set; }
 
         public LendObject AddObject { get; set; }
     }

@@ -1,0 +1,18 @@
+﻿{
+	"version": "1.0.0-*",
+	"description": "Model Class Library",
+	"authors": [ "talis" ],
+	"tags": [ "" ],
+	"projectUrl": "",
+	"licenseUrl": "",
+	"frameworks": {
+		"dnx451": {
+			"dependencies": {
+			}
+		}
+	},
+	"dependencies": {
+		"DAL": "1.0.0-*",
+		"Model": "1.0.0-*"
+	}
+}

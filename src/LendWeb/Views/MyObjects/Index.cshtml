@@ -44,7 +44,7 @@
             @Html.DisplayNameFor(model => model.MyLendings.First().LentAt)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MyLendings.First().OtherUser)
+            Borrower
         </th>
     </tr>
 
@@ -55,7 +55,7 @@
                 @Html.DisplayFor(modelItem => item.LentAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OtherUser)
+                @Html.DisplayFor(modelItem => item.OtherUserName)
             </td>
         </tr>
 
@@ -70,7 +70,7 @@
             @Html.DisplayNameFor(model => model.MyBorrowings.First().LentAt)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MyBorrowings.First().OtherUser)
+            Lender
         </th>
     </tr>
 
@@ -81,7 +81,7 @@
                 @Html.DisplayFor(modelItem => item.LentAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OtherUser)
+                @Html.DisplayFor(modelItem => item.OtherUserName)
             </td>
         </tr>
 
