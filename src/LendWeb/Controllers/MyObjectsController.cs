@@ -11,23 +11,25 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using LendWeb.ViewModels.MyObjects;
 using BLL.Interfaces;
+using BLL.DTO;
 
 namespace LendWeb.Controllers
 {
     [Authorize]
     public class MyObjectsController : Controller
     {
-        private IRepositoryProvider _repos;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ILendingService _lService;
 
-        public MyObjectsController(IRepositoryProvider repos, UserManager<User> um, SignInManager<User> sm, ILendingService lService)
+        private readonly ILendingService _lService;
+        private readonly IUsersService _uService;
+
+        public MyObjectsController(UserManager<User> um, SignInManager<User> sm, ILendingService lService, IUsersService uService)
         {
-            _repos = repos;
             _userManager = um;
             _signInManager = sm;
             _lService = lService;
+            _uService = uService;
         }
 
         public IActionResult Index()
@@ -49,7 +51,7 @@ namespace LendWeb.Controllers
             if (ModelState.IsValid)
             {
                 lendObject.AddObject.Added = DateTime.Now;
-                _repos.LendObjectRepository.Add(GetUserId(), lendObject.AddObject);
+                _lService.AddUserLendObject(GetUserId(), lendObject.AddObject);
                 return RedirectToAction("Index");
             }
             return View(lendObject);
@@ -58,7 +60,7 @@ namespace LendWeb.Controllers
         [HttpGet]
         public IActionResult Lend(string id)
         {
-            if (id == null || _repos.LendObjectRepository.GetUserObject(GetUserId(), id) == null)
+            if (id == null || _lService.GetUserObject(GetUserId(), id) == null)
             {
                 return HttpNotFound();
             }
@@ -77,6 +79,23 @@ namespace LendWeb.Controllers
             return View("Lend",model);
         }
 
+        [HttpGet]
+        public IActionResult MarkReturned(string id)
+        {
+            LendObjectDTO lobject;
+            if (id != null)
+            {
+                lobject = _lService.GetUserObject(GetUserId(), id);
+                if(lobject != null && lobject.Status != LendObjectDTO.LendObjectStatus.Available)
+                {
+                    _lService.UserObjectReturned(GetUserId(), id);
+                    return RedirectToAction("Index");
+                }
+                return HttpNotFound();
+            }
+            return HttpNotFound();
+        }
+
         [HttpPost]
         public IActionResult LendToUser(LendToUserModel model)
         {
@@ -87,33 +106,21 @@ namespace LendWeb.Controllers
             if (ModelState.IsValid)
             {
 
-                var lrepo = _repos.LendingRepository;
-                var lorepo = _repos.LendObjectRepository;
-                var urepo = _repos.UserRepository;
-
-                var lending = new Lending();
-
-                if (lorepo.GetUserObject(GetUserId(),model.ObjectId) == null)
+                if (_lService.GetUserObject(GetUserId(),model.ObjectId) == null)
                 {
                     return HttpNotFound();
                 }
 
                 if (!string.IsNullOrEmpty(model.LendToUser))
                 {
-                    User otherUser = urepo.FindByUserName(model.LendToUser);
-                    if (otherUser != null)
+                    if (_uService.UserExists(model.LendToUser))
                     {
-                        lending.OtherUser = otherUser.Id;
-                        lending.LendObjectId = model.ObjectId;
-                        lending.LentAt = DateTime.Now;
-                        lending.ExpectedReturn = DateTime.Now.AddDays(7);
-                        lrepo.LendUserObject(GetUserId(), lending);
+                        _lService.LendUserObject(GetUserId(), model.ObjectId, model.LendToUser);
                         return RedirectToAction("Index");
                     }
                     else
                     {
                         ModelState.AddModelError("LendToUser", "User " + model.LendToUser + " does'nt exist!");
-
                         return View("Lend",new LendModel(model) { Borrower = LendModel.BorrowerType.User });
                     }
                 }

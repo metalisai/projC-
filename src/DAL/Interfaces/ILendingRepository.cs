@@ -8,10 +8,12 @@ namespace DAL.Interfaces
 {
     public interface ILendingRepository
     {
-        void LendUserObject(string userId, Lending lending);
         void Remove(string userId, string lendingId);
-        void MarkRetured(string userId, string lendingId);
+        // TODO: this method doesn,t really belong here, does it?
+        void MarkRetured(string userId, string lendObjectId);
         IList<Lending> GetUserLendings(string userId);
         IList<Lending> GetUserBorrowings(string userId);
+        bool AddUserLending(string userId, Lending lending);
+        bool AddUserBorrowing(string userId, Lending lending);
     }
 }

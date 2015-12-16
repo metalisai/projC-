@@ -20,28 +20,20 @@ namespace DAL.Repositories
             _db = client.Database;
         }
 
-        public void LendUserObject(string userId, Lending lending)
+        public bool AddUserLending(string userId, Lending lending)
         {
             var collection = _db.GetCollection<BsonDocument>("Users");
-            UpdateResult borrowerResult = null;
-            if (lending.OtherUser != null)
-            {
-                // basically deep clone with 1 field changed
-                var borrowerLending = new Lending();
-                borrowerLending.OtherUser = userId;
-                borrowerLending.LentAt = lending.LentAt;
-                borrowerLending.ExpectedReturn = lending.ExpectedReturn;
-                borrowerLending.Returned = lending.Returned;
-                borrowerLending.LendObjectId = lending.LendObjectId;
-                
-                var borrowerupdate = Builders<BsonDocument>.Update.Push("Borrowings", lending);
-                borrowerResult = collection.UpdateOne(new BsonDocument("_id", new ObjectId(lending.OtherUser)), borrowerupdate);
-            }
-            if (borrowerResult != null && borrowerResult.ModifiedCount > 0)
-            {
-                var update = Builders<BsonDocument>.Update.Push("Lendings", lending);
-                collection.UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
-            }
+            var update = Builders<BsonDocument>.Update.Push("Lendings", lending);
+            var result = collection.UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
+            return result.IsAcknowledged && result.ModifiedCount > 0;
+        }
+
+        public bool AddUserBorrowing(string userId, Lending lending)
+        {
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var update = Builders<BsonDocument>.Update.Push("Borrowings", lending);
+            var result = collection.UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
+            return result.IsAcknowledged && result.ModifiedCount > 0;
         }
 
         public IList<Lending> GetUserLendings(string userId)
@@ -58,9 +50,13 @@ namespace DAL.Repositories
             return ret ?? new List<Lending>();
         }
 
-        public void MarkRetured(string userId, string lendingId)
+        public void MarkRetured(string userId, string lendObjectId)
         {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = Builders<BsonDocument>.Filter.And(builder.Eq("_id", new ObjectId(userId)), builder.Eq("LendObjects._id", new ObjectId(lendObjectId)));
+            var update = Builders<BsonDocument>.Update.Unset("LendObjects.$.CurrentLending");
+            collection.UpdateOne(filter, update);  
         }
 
         public void Remove(string userId, string lendingId)

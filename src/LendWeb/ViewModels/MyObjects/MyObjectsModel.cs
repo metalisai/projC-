@@ -10,13 +10,13 @@ namespace LendWeb.ViewModels.MyObjects
 {
     public class MyObjectsModel
     {
-        public IEnumerable<LendObject> MyObjects{ get; set; }
+        public IEnumerable<LendObjectDTO> MyObjects{ get; set; }
 
         public IEnumerable<LendingDTO> MyLendings { get; set; }
 
         public IEnumerable<LendingDTO> MyBorrowings { get; set; }
 
-        public LendObject AddObject { get; set; }
+        public LendObjectDTO AddObject { get; set; }
     }
 
     public class LendModel
