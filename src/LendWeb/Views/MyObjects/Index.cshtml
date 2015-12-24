@@ -17,25 +17,29 @@
             @Html.DisplayNameFor(model => model.MyObjects.First().Name)
         </th>
         <th></th>
-        
-    </tr>
-    
-@foreach (var item in Model.MyObjects) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Added)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @{var action = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "MarkReturned";}
-            @{var actionText = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "Mark Returned";}
-            <a asp-action="@action" asp-route-id="@item.Id.ToString()">@actionText</a>
-        </td>
+        <th></th>
     </tr>
 
-}
+    @foreach (var item in Model.MyObjects)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Added)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @{var action = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "MarkReturned";}
+                @{var actionText = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "Mark Returned";}
+                <a asp-action="@action" asp-route-id="@item.Id.ToString()">@actionText</a>
+            </td>
+            <td>
+                <a asp-action="Show" asp-route-id="@item.Id.ToString()">Details</a>
+            </td>
+        </tr>
+
+                    }
 </table>
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addNewModal">Add new</button>
 
@@ -104,30 +108,34 @@
 <div id="addNewModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-            <form asp-action="Create">
+        <form asp-action="Create">
 
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Add new object</h4>
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new object</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="AddObject.Name"></label>
+                        <input asp-for="AddObject.Name" class="form-control" />
+                        <span asp-validation-for="AddObject.Name" class="text-danger" />
                     </div>
-                    <div class="modal-body">
-                        <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="AddObject.Name"></label>
-                            <input asp-for="AddObject.Name" class="form-control" />
-                            <span asp-validation-for="AddObject.Name" class="text-danger" />
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Create" class="btn btn-default" />
-                            </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-default" />
                         </div>
                     </div>
                 </div>
-            </form>
+
+            </div>
+        </form>
     </div>
 
 </div>

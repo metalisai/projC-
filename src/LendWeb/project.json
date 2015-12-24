@@ -25,7 +25,8 @@
         "Model": "1.0.0-*",
         "DAL": "1.0.0-*",
         "CustomIdentity": "1.0.0-*",
-        "BLL": "1.0.0-*"
+        "BLL": "1.0.0-*",
+        "EntityFramework.Commands": "7.0.0-rc1-final"
     },
 
   "commands": {

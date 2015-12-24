@@ -106,5 +106,10 @@ namespace BLL
         {
             _repos.LendingRepository.MarkRetured(userId, objectId);
         }
+
+        public void AddImageToLendObject(string userId, string objectId, string fileName)
+        {
+            _repos.LendObjectRepository.AddImageToLendObject(userId, objectId, fileName);
+        }
     }
 }

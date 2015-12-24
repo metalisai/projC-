@@ -1,0 +1,40 @@
+@using LendWeb.ViewModels.MyObjects
+
+@model ShowModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Your lendable objects</h2>
+
+<table class="table">
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.ShowObject.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.ShowObject.Name)
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.ShowObject.Added)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.ShowObject.Added)
+        </td>
+    </tr>
+</table>
+
+@foreach (var item in Model.ShowObject.Images)
+{
+    <img class="object-image" src="~/uploads/@item"/>
+}
+
+
+<form asp-action="PostFile" asp-route-id="@Model.ShowObject.Id.ToString()" method="post" enctype="multipart/form-data">
+    <input type="file" name="files" id="file1" />
+    <input type="submit" value="submit" />
+</form>

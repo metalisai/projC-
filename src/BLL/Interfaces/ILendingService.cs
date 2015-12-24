@@ -22,5 +22,7 @@ namespace BLL.Interfaces
         LendObjectDTO GetUserObject(string userId, string objectId);
 
         void UserObjectReturned(string userId, string objectId);
+
+        void AddImageToLendObject(string userId, string objectId, string fileName);
     }
 }

@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 using LendWeb.ViewModels.MyObjects;
 using BLL.Interfaces;
 using BLL.DTO;
+using Microsoft.AspNet.Http;
+using System.IO;
+using Microsoft.Data.Entity.Design.Internal;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace LendWeb.Controllers
 {
@@ -24,12 +28,18 @@ namespace LendWeb.Controllers
         private readonly ILendingService _lService;
         private readonly IUsersService _uService;
 
-        public MyObjectsController(UserManager<User> um, SignInManager<User> sm, ILendingService lService, IUsersService uService)
+        private readonly IApplicationEnvironment _hostingEnvironment;
+
+
+        public MyObjectsController(UserManager<User> um, SignInManager<User> sm, ILendingService lService, 
+            IUsersService uService, IApplicationEnvironment hostingEnvironment)
         {
             _userManager = um;
             _signInManager = sm;
             _lService = lService;
             _uService = uService;
+            _hostingEnvironment = hostingEnvironment;
+
         }
 
         public IActionResult Index()
@@ -48,6 +58,7 @@ namespace LendWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(MyObjectsModel lendObject)
         {
+            // TODO: check name for null or empty
             if (ModelState.IsValid)
             {
                 lendObject.AddObject.Added = DateTime.Now;
@@ -55,6 +66,58 @@ namespace LendWeb.Controllers
                 return RedirectToAction("Index");
             }
             return View(lendObject);
+        }
+
+        [HttpGet]
+        public IActionResult Show(string id)
+        {
+            LendObjectDTO lObject;
+
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                lObject = _lService.GetUserObject(GetUserId(), id);
+                if(lObject == null)
+                {
+                    return HttpNotFound();
+                }
+            }
+
+            var model = new ShowModel
+            {
+                ShowObject = lObject
+            };
+
+            return View("Show", model);
+        }
+
+        public async Task<ActionResult> PostFile(string id, IList<IFormFile> files)
+        {
+            // TODO: check if lendobject exists
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+ 
+            foreach (var f in files)
+            {
+                string filePath = _hostingEnvironment.ApplicationBasePath + "\\wwwroot\\uploads\\";
+                if(!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+
+                if (f.ContentType == "image/png")
+                {
+                    string fileName = Guid.NewGuid() + ".png";
+                    await f.SaveAsAsync(Path.Combine(filePath, fileName));
+                    _lService.AddImageToLendObject(GetUserId(), id, fileName);
+                }
+            }
+            return RedirectToAction("Show",new { id = id });
         }
 
         [HttpGet]

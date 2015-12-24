@@ -14,5 +14,6 @@ namespace Model
         [BsonIgnoreIfNull]
         [BsonRepresentation(BsonType.ObjectId)]
         public string CurrentLending { get; set; }
+        public IList<string> Images { get; set; } = new List<string>();
     }
 }

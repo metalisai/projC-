@@ -64,4 +64,9 @@ namespace LendWeb.ViewModels.MyObjects
         public string LendToEmail { get; set; }
         public string LendToName { get; set; }
     }
+
+    public class ShowModel
+    {
+        public LendObjectDTO ShowObject { get; set; }
+    }
 }

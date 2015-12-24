@@ -22,6 +22,10 @@ namespace DAL.Repositories
 
         public void Add(string userId, LendObject lo)
         {
+            if(string.IsNullOrEmpty(lo.Id))
+            {
+                lo.Id = ObjectId.GenerateNewId().ToString();
+            }
             var update = Builders<BsonDocument>.Update.Push("LendObjects", lo);
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
         }
@@ -53,6 +57,17 @@ namespace DAL.Repositories
             var filter = Builders<BsonDocument>.Filter.And(builder.Eq("_id", new ObjectId(userId)), builder.Eq("LendObjects._id", new ObjectId(objectId)));
             var update = Builders<BsonDocument>.Update.Set("LendObjects.$.CurrentLending", lendingId);
             collection.UpdateOne(filter, update);
+        }
+
+        public void AddImageToLendObject(string userId, string objectId, string fileName)
+        {
+            var update = Builders<BsonDocument>.Update.Push("LendObjects.$.Images", fileName);
+
+            var conditions = new List<BsonElement>();
+            conditions.Add(new BsonElement("_id", new ObjectId(userId)));
+            conditions.Add(new BsonElement("LendObjects._id", new ObjectId(objectId)));
+
+            _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument(conditions), update);
         }
     }
 }
