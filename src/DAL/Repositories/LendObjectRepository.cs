@@ -59,6 +59,15 @@ namespace DAL.Repositories
             collection.UpdateOne(filter, update);
         }
 
+        public void SetLendObjectBorrowing(string userId, string objectId, string lendingId)
+        {
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = Builders<BsonDocument>.Filter.And(builder.Eq("_id", new ObjectId(userId)), builder.Eq("LendObjects._id", new ObjectId(objectId)));
+            var update = Builders<BsonDocument>.Update.Set("LendObjects.$.CurrentBorrowing", lendingId);
+            collection.UpdateOne(filter, update);
+        }
+
         public void AddImageToLendObject(string userId, string objectId, string fileName)
         {
             var update = Builders<BsonDocument>.Update.Push("LendObjects.$.Images", fileName);

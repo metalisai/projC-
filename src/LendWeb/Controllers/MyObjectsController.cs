@@ -221,12 +221,23 @@ namespace LendWeb.Controllers
         [HttpPost]
         public IActionResult LendToContact(LendToContactModel model)
         {
-            if (string.IsNullOrEmpty(model.ObjectId))
+            if (string.IsNullOrEmpty(model.ObjectId) || _lService.GetUserObject(GetUserId(), model.ObjectId) == null)
             {
                 return HttpNotFound();
             }
-            ModelState.AddModelError(string.Empty, "Not implemented!");
-            return View("Lend", new LendModel(model)  { Borrower = LendModel.BorrowerType.Contact });
+            if (string.IsNullOrEmpty(model.LendToName))
+            {
+                ModelState.AddModelError(string.Empty, "Name field must be filled!");
+                return View("Lend", new LendModel(model) { Borrower = LendModel.BorrowerType.Contact });
+            }
+            if (string.IsNullOrEmpty(model.LendToEmail))
+            {
+                ModelState.AddModelError(string.Empty, "Email field must be filled!");
+                return View("Lend", new LendModel(model) { Borrower = LendModel.BorrowerType.Contact });
+            }
+
+            _lService.LendUserObjectToContact(GetUserId(), model.ObjectId, model.LendToName, model.LendToEmail);
+            return RedirectToAction("Index");
         }
 
         private string GetUserId()

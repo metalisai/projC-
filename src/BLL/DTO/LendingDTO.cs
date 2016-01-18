@@ -12,5 +12,6 @@ namespace BLL.DTO
         public string OtherUserName { get; set; }
         public string ItemName { get; set; }
         public string ItemId { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -15,5 +15,6 @@ namespace DAL.Interfaces
         void SetLendObjectLending(string userId, string objectId, string lendingId);
         void AddImageToLendObject(string userId, string objectId, string fileName);
         void AddPropertyToLendObject(string userId, string objectId, object property);
+        void SetLendObjectBorrowing(string userId, string objectId, string lendingId);
     }
 }

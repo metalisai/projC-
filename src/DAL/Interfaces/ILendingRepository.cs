@@ -15,5 +15,7 @@ namespace DAL.Interfaces
         IList<Lending> GetUserBorrowings(string userId);
         bool AddUserLending(string userId, Lending lending);
         bool AddUserBorrowing(string userId, Lending lending);
+        Lending GetUserLending(string userId, string lendingId);
+        Lending GetUserBorrowing(string userId, string lendingId);
     }
 }

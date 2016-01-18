@@ -18,6 +18,18 @@ namespace BLL
             _repos = repos;
         }
 
+        private string GetLendingStatus(string userId, Lending lending)
+        {
+            var obj = GetUserObject(userId, lending.LendObjectId);
+            return obj.CurrentLending == lending.Id ? "Not returned" : "Returned";
+        }
+
+        private string GetBorrowingStatus(string userId, Lending lending)
+        {
+            var obj = GetUserObject(userId, lending.LendObjectId);
+            return obj.CurrentBorrowing == lending.Id ? "Not returned" : "Returned";
+        }
+
         // TODO: use DTO
         public IList<LendObjectDTO> GetUserLendObjects(string userId)
         {
@@ -33,9 +45,10 @@ namespace BLL
             {
                 ExpectedReturn = x.ExpectedReturn.Value,
                 LentAt = x.LentAt,
-                OtherUserName = _repos.UserRepository.FindById(x.OtherUser).UserName,
-                ItemName = _repos.LendObjectRepository.GetUserObject(x.OtherUser, x.LendObjectId).Name,
-                ItemId = x.LendObjectId
+                OtherUserName = x.OtherUser != null ? _repos.UserRepository.FindById(x.OtherUser).UserName: x.BorrowerName,
+                ItemName = _repos.LendObjectRepository.GetUserObject(userId, x.LendObjectId).Name,
+                ItemId = x.LendObjectId,
+                Status = GetLendingStatus(userId, x)
             }).ToList();
         }
 
@@ -47,23 +60,28 @@ namespace BLL
                 LentAt = x.LentAt,
                 OtherUserName = _repos.UserRepository.FindById(x.OtherUser).UserName,
                 ItemName = _repos.LendObjectRepository.GetUserObject(x.OtherUser, x.LendObjectId).Name,
-                ItemId = x.LendObjectId
+                ItemId = x.LendObjectId,
+                Status = GetBorrowingStatus(x.OtherUser, x)
             }).ToList();
         }
 
         public void LendUserObject(string userId, string objectId, string otherUserName)
         {
             bool borrowerResult = false;
+            Lending borrowerLending = null;
+
             User otherUser = _repos.UserRepository.FindByUserName(otherUserName);
             if (otherUser != null)
             {
                 // basically deep clone with 1 field changed
-                var borrowerLending = new Lending();
-                borrowerLending.OtherUser = userId;
-                borrowerLending.LentAt = DateTime.Now;
-                borrowerLending.ExpectedReturn = DateTime.Now.AddDays(7);
-                borrowerLending.Returned = null;
-                borrowerLending.LendObjectId = objectId;
+                borrowerLending = new Lending()
+                {
+                    OtherUser = userId,
+                    LentAt = DateTime.Now,
+                    ExpectedReturn = DateTime.Now.AddDays(7),
+                    Returned = null,
+                    LendObjectId = objectId
+                };
 
                 borrowerResult = _repos.LendingRepository.AddUserBorrowing(otherUser.Id, borrowerLending);
             }
@@ -81,7 +99,26 @@ namespace BLL
                 if(result)
                 {
                     _repos.LendObjectRepository.SetLendObjectLending(userId, objectId, lending.Id);
+                    _repos.LendObjectRepository.SetLendObjectBorrowing(userId, objectId, borrowerLending.Id);
                 }
+            }
+        }
+
+        public void LendUserObjectToContact(string userId, string objectId, string otherUserName, string otherEmail)
+        {
+            var lending = new Lending
+            {
+                BorrowerName = otherUserName,
+                BorrowerEmail = otherEmail,
+                LentAt = DateTime.Now,
+                ExpectedReturn = DateTime.Now.AddDays(7),
+                Returned = null,
+                LendObjectId = objectId
+            };
+            bool result = _repos.LendingRepository.AddUserLending(userId, lending);
+            if (result)
+            {
+                _repos.LendObjectRepository.SetLendObjectLending(userId, objectId, lending.Id);
             }
         }
 
