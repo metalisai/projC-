@@ -20,6 +20,7 @@ namespace BLL.DTO
         public string Id { get; set; }
         public LendObjectStatus Status { get; set; }
         public IList<string> Images { get; set; }
+        public IList<LendObject.LoProperty> Properties { get; set; }
 
         public LendObjectDTO()
         {
@@ -32,7 +33,8 @@ namespace BLL.DTO
             CurrentLending = lobject.CurrentLending;
             Name = lobject.Name;
             Id = lobject.Id;
-            Images = lobject.Images;
+            Images = lobject.Images??new List<string>();
+            Properties = lobject.Properties;
         }
 
         public LendObject ToLendObject()
@@ -43,7 +45,8 @@ namespace BLL.DTO
                 CurrentLending = this.CurrentLending,
                 Name = this.Name,
                 Id = this.Id,
-                Images = this.Images
+                Images = this.Images ?? new List<string>(),
+                Properties = this.Properties ?? new List<LendObject.LoProperty>()
             };
         }
     }

@@ -1,4 +1,5 @@
 @using LendWeb.ViewModels.MyObjects
+@using Model
 
 @model ShowModel
 
@@ -26,6 +27,17 @@
             @Html.DisplayFor(model => model.ShowObject.Added)
         </td>
     </tr>
+    @foreach (var item in Model.ShowObject.Properties)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.PropertyName)
+            </td>
+            <td>
+                @item.ToString()
+            </td>
+        </tr>
+    }
 </table>
 
 @foreach (var item in Model.ShowObject.Images)
@@ -38,3 +50,49 @@
     <input type="file" name="files" id="file1" />
     <input type="submit" value="submit" />
 </form>
+
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addPropertyModal">Add property</button>
+
+<div id="addPropertyModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <form asp-action="AddObjectProperty" ng-app>
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new object</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="ShowObject.Id" type="hidden" />
+                        <label asp-for="AddProperty.Name"></label>
+                        <input asp-for="AddProperty.Name" class="form-control" />
+                        <span asp-validation-for="AddProperty.Name" class="text-danger" />
+                        <select asp-for="AddPropertyType" class="form-control" ng-model="inputType">
+                            <option value="Text">Text</option>
+                            <option value="Integer">Number</option>
+                            <option value="Date">Date</option>
+                        </select>
+                        <input asp-for="AddProperty.Date" type="date" class="form-control" ng-show="inputType == 'Date'"/>
+                        <input asp-for="AddProperty.Number" type="number" class="form-control" ng-show="inputType == 'Integer'" />
+                        <input asp-for="AddProperty.Text" type="text" class="form-control" ng-show="inputType == 'Text'" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -69,5 +69,16 @@ namespace DAL.Repositories
 
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument(conditions), update);
         }
+
+        public void AddPropertyToLendObject(string userId, string objectId, object property)
+        {
+            var update = Builders<BsonDocument>.Update.Push("LendObjects.$.Properties", property);
+
+            var conditions = new List<BsonElement>();
+            conditions.Add(new BsonElement("_id", new ObjectId(userId)));
+            conditions.Add(new BsonElement("LendObjects._id", new ObjectId(objectId)));
+
+            _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument(conditions), update);
+        }
     }
 }

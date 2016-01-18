@@ -67,6 +67,16 @@ namespace LendWeb.ViewModels.MyObjects
 
     public class ShowModel
     {
+        public class LendObjetProperty
+        {
+            public string Name { get; set; }
+            public DateTime Date{ get; set; }
+            public int Number { get; set; }
+            public string Text { get; set; }
+        }
+
         public LendObjectDTO ShowObject { get; set; }
+        public LendObjetProperty AddProperty { get; set; }
+        public LendObject.LoProperty.LoPropertyType AddPropertyType { get; set; }
     }
 }

@@ -160,6 +160,33 @@ namespace LendWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddObjectProperty(ShowModel model)
+        {
+            object propertyToAdd;
+            switch(model.AddPropertyType)
+            {
+                case LendObject.LoProperty.LoPropertyType.Date:
+                    propertyToAdd = model.AddProperty.Date;
+                    break;
+                case LendObject.LoProperty.LoPropertyType.Text:
+                    propertyToAdd = model.AddProperty.Text;
+                    break;
+                case LendObject.LoProperty.LoPropertyType.Integer:
+                    propertyToAdd = model.AddProperty.Number;
+                    break;
+                default:
+                    // TODO: more graceful error handling
+                    return new HttpStatusCodeResult(500);
+            }
+            _lService.AddPropertyToLendObject(GetUserId(), model.ShowObject.Id, new LendObject.LoProperty {
+                PropertyName = model.AddProperty.Name,
+                Property = propertyToAdd});
+
+            return RedirectToAction("Show", new { id = model.ShowObject.Id });
+        }
+
+        [HttpPost]
         public IActionResult LendToUser(LendToUserModel model)
         {
             if (string.IsNullOrEmpty(model.ObjectId))

@@ -111,5 +111,10 @@ namespace BLL
         {
             _repos.LendObjectRepository.AddImageToLendObject(userId, objectId, fileName);
         }
+
+        public void AddPropertyToLendObject(string userId, string objectId, object property)
+        {
+            _repos.LendObjectRepository.AddPropertyToLendObject(userId, objectId, property);
+        }
     }
 }
