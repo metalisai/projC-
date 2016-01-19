@@ -71,13 +71,9 @@ namespace DAL.Repositories
         public User FindById(string userId)
         {
             var collection = _db.GetCollection<User>("Users");
-            return collection.Find(new BsonDocument("_id", new ObjectId(userId))).FirstOrDefault();
-        }
-
-        public User FindById(ObjectId userId)
-        {
-            var collection = _db.GetCollection<User>("Users");
-            return collection.Find(new BsonDocument("_id", userId)).FirstOrDefault();
+            ObjectId oid;
+            bool valid = ObjectId.TryParse(userId, out oid);
+            return valid ? collection.Find(new BsonDocument("_id", oid)).FirstOrDefault() : null;
         }
 
         public User FindByUserName(string username)

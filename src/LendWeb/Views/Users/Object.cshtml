@@ -1,0 +1,50 @@
+@using LendWeb.ViewModels.Users
+
+@model ObjectPageModel
+
+@{
+    ViewData["Title"] = Model.Object.Name;
+}
+
+<h1>Object</h1>
+
+<table class="table">
+    <tr>
+        <td>
+            Owner
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.User.UserName)
+        </td>
+
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.Object.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.Object.Name)
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.Object.Added)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.Object.Added)
+        </td>
+    </tr>
+    @foreach (var item in Model.Object.Properties)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.PropertyName)
+            </td>
+            <td>
+                @item.ToString()
+            </td>
+        </tr>
+    }
+</table>

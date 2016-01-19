@@ -203,7 +203,7 @@ namespace LendWeb.Controllers
 
                 if (!string.IsNullOrEmpty(model.LendToUser))
                 {
-                    if (_uService.UserExists(model.LendToUser))
+                    if (_uService.UserWithNameExists(model.LendToUser))
                     {
                         _lService.LendUserObject(GetUserId(), model.ObjectId, model.LendToUser);
                         return RedirectToAction("Index");

@@ -46,6 +46,7 @@ namespace BLL
                 ExpectedReturn = x.ExpectedReturn.Value,
                 LentAt = x.LentAt,
                 OtherUserName = x.OtherUser != null ? _repos.UserRepository.FindById(x.OtherUser).UserName: x.BorrowerName,
+                OtherUserId = x.OtherUser,
                 ItemName = _repos.LendObjectRepository.GetUserObject(userId, x.LendObjectId).Name,
                 ItemId = x.LendObjectId,
                 Status = GetLendingStatus(userId, x)
@@ -59,6 +60,7 @@ namespace BLL
                 ExpectedReturn = x.ExpectedReturn.Value,
                 LentAt = x.LentAt,
                 OtherUserName = _repos.UserRepository.FindById(x.OtherUser).UserName,
+                OtherUserId = x.OtherUser,
                 ItemName = _repos.LendObjectRepository.GetUserObject(x.OtherUser, x.LendObjectId).Name,
                 ItemId = x.LendObjectId,
                 Status = GetBorrowingStatus(x.OtherUser, x)

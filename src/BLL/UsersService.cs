@@ -17,15 +17,26 @@ namespace BLL
             _repos = repos;
         }
 
-        public bool UserExists(string username)
+        public bool UserWithNameExists(string username)
         {
             // TODO: should probably write a repo method for it
             return _repos.UserRepository.FindByUserName(username) != null;
         }
 
+        public bool UserWithIdExists(string id)
+        {
+            // TODO: should probably write a repo method for it
+            return _repos.UserRepository.FindById(id) != null;
+        }
+
         public UserDTO FindUserByName(string username)
         {
             return new UserDTO(_repos.UserRepository.FindByUserName(username));
+        }
+
+        public UserDTO FindUserById(string id)
+        {
+            return new UserDTO(_repos.UserRepository.FindById(id));
         }
     }
 }

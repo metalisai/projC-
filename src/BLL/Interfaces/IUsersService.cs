@@ -8,7 +8,9 @@ namespace BLL.Interfaces
 {
     public interface IUsersService
     {
-        bool UserExists(string username);
+        bool UserWithNameExists(string username);
         UserDTO FindUserByName(string username);
+        bool UserWithIdExists(string id);
+        UserDTO FindUserById(string id);
     }
 }

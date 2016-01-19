@@ -64,10 +64,17 @@
                 @Html.DisplayFor(modelItem => item.LentAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OtherUserName)
+                @if (item.OtherUserId != null)
+                {
+                    <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
+                }
+                else
+                {
+                    @item.OtherUserName
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                <a asp-action="Show" asp-route-id="@item.ItemId">@item.ItemName</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
@@ -99,10 +106,10 @@
                 @Html.DisplayFor(modelItem => item.LentAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OtherUserName)
+                <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                <a asp-controller="Users" asp-action="Object" asp-route-id="@item.OtherUserId" asp-route-ObjectId="@item.ItemId">@item.ItemName</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
