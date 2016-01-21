@@ -8,116 +8,143 @@
 
 <h2>Your lendable objects</h2>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.MyObjects.First().Added)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MyObjects.First().Name)
-        </th>
-        <th></th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model.MyObjects)
-    {
+@if (Model.MyObjects.Count() > 0)
+{
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Added)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @{var action = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "MarkReturned";}
-                @{var actionText = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "Mark Returned";}
-                <a asp-action="@action" asp-route-id="@item.Id.ToString()">@actionText</a>
-            </td>
-            <td>
-                <a asp-action="Show" asp-route-id="@item.Id.ToString()">Details</a>
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.MyObjects.First().Added)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MyObjects.First().Name)
+            </th>
+            <th></th>
+            <th></th>
         </tr>
 
-                    }
-</table>
+        @foreach (var item in Model.MyObjects)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Added)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @{var action = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "MarkReturned";}
+                    @{var actionText = item.Status == BLL.DTO.LendObjectDTO.LendObjectStatus.Available ? "Lend" : "Mark Returned";}
+                    <a asp-action="@action" asp-route-id="@item.Id.ToString()">@actionText</a>
+                </td>
+                <td>
+                    <a asp-action="Show" asp-route-id="@item.Id.ToString()">Details</a>
+                </td>
+            </tr>
+
+        }
+    </table>
+}
+else
+{
+    <div class="alert alert-info" style="max-width: 500px;">
+        You haven't added any objects.
+    </div>
+}
+
+
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addNewModal">Add new</button>
 
 <h2>Your lendings</h2>
-
-<table class="table">
-    <tr>
-        <th>
-           Lent at
-        </th>
-        <th>
-            Borrower
-        </th>
-        <th>Item</th>
-        <th>Status</th>
-    </tr>
-
-    @foreach (var item in Model.MyLendings)
-    {
+@if (Model.MyLendings.Count() > 0)
+{
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LentAt)
-            </td>
-            <td>
-                @if (item.OtherUserId != null)
-                {
-                    <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
-                }
-                else
-                {
-                    @item.OtherUserName
-                }
-            </td>
-            <td>
-                <a asp-action="Show" asp-route-id="@item.ItemId">@item.ItemName</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+            <th>
+                Lent at
+            </th>
+            <th>
+                Borrower
+            </th>
+            <th>Item</th>
+            <th>Status</th>
         </tr>
-    }
-</table>
+
+        @foreach (var item in Model.MyLendings)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LentAt)
+                </td>
+                <td>
+                    @if (item.OtherUserId != null)
+                    {
+                        <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
+                    }
+                    else
+                    {
+                        @item.OtherUserName
+                    }
+                </td>
+                <td>
+                    <a asp-action="Show" asp-route-id="@item.ItemId">@item.ItemName</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="alert alert-info" style="max-width: 500px;">
+        You have no lendings.
+    </div>
+}
 
 <h2>Your borrowings</h2>
-
-<table class="table">
-    <tr>
-        <th>
-            Borrowed
-        </th>
-        <th>
-            Lender
-        </th>
-        <th>
-            Item
-        </th>
-        <th>Status</th>
-    </tr>
-
-    @foreach (var item in Model.MyBorrowings)
-    {
+@if (Model.MyBorrowings.Count() > 0)
+{
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LentAt)
-            </td>
-            <td>
-                <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
-            </td>
-            <td>
-                <a asp-controller="Users" asp-action="Object" asp-route-id="@item.OtherUserId" asp-route-ObjectId="@item.ItemId">@item.ItemName</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+            <th>
+                Borrowed
+            </th>
+            <th>
+                Lender
+            </th>
+            <th>
+                Item
+            </th>
+            <th>Status</th>
         </tr>
 
-    }
-</table>
+        @foreach (var item in Model.MyBorrowings)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LentAt)
+                </td>
+                <td>
+                    <a asp-controller="Users" asp-action="Profile" asp-route-id="@item.OtherUserId">@item.OtherUserName</a>
+                </td>
+                <td>
+                    <a asp-controller="Users" asp-action="Object" asp-route-id="@item.OtherUserId" asp-route-ObjectId="@item.ItemId">@item.ItemName</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+
+        }
+    </table>
+}
+else
+{
+    <div class="alert alert-info" style="max-width: 500px;">
+        You have no borrowings.
+    </div>
+}
 
 <!-- Add new modal -->
 <div id="addNewModal" class="modal fade" role="dialog">

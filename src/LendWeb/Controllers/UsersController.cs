@@ -42,6 +42,23 @@ namespace LendWeb.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var model = new SearchPageModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(SearchPageModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                model.Users = _uService.SearchUsersByName(model.Search);
+            }
+            return View(model);
+        }
+
         public IActionResult Profile(string id)
         {
             if(string.IsNullOrEmpty(id) || !_uService.UserWithIdExists(id))

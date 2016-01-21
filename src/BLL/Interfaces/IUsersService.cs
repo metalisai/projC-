@@ -12,5 +12,6 @@ namespace BLL.Interfaces
         UserDTO FindUserByName(string username);
         bool UserWithIdExists(string id);
         UserDTO FindUserById(string id);
+        IList<UserDTO> SearchUsersByName(string name);
     }
 }

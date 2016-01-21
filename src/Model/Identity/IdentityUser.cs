@@ -120,6 +120,8 @@ namespace Model
         /// </summary>
         public IList<IdentityUserLogin> Logins { get; set; } = new List<IdentityUserLogin>();
 
+        public DateTime? Joined;
+
         /// <summary>
         /// Returns the username for this user.
         /// </summary>

@@ -10,6 +10,8 @@ namespace BLL.DTO
     {
         public string UserName { get; set; }
         public string Email { get; set; }
+        public DateTime Joined { get; set; }
+        public string Id { get; set; }
 
         public UserDTO()
         {
@@ -20,6 +22,8 @@ namespace BLL.DTO
         {
             UserName = user.UserName;
             Email = user.Email;
+            Joined = user.Joined.Value;
+            Id = user.Id;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DAL.Repositories
             _db = client.Database;
         }
 
-        public void Add(string userId, LendObject lo)
+        public string Add(string userId, LendObject lo)
         {
             if(string.IsNullOrEmpty(lo.Id))
             {
@@ -28,6 +28,7 @@ namespace DAL.Repositories
             }
             var update = Builders<BsonDocument>.Update.Push("LendObjects", lo);
             _db.GetCollection<BsonDocument>("Users").UpdateOne(new BsonDocument("_id", new ObjectId(userId)), update);
+            return lo.Id;
         }
 
         // TODO: use projection

@@ -62,8 +62,8 @@ namespace LendWeb.Controllers
             if (ModelState.IsValid)
             {
                 lendObject.AddObject.Added = DateTime.Now;
-                _lService.AddUserLendObject(GetUserId(), lendObject.AddObject);
-                return RedirectToAction("Index");
+                var nid = _lService.AddUserLendObject(GetUserId(), lendObject.AddObject);
+                return RedirectToAction("Show",new { id = nid });
             }
             return View(lendObject);
         }

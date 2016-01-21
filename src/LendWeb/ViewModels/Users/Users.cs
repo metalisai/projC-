@@ -16,4 +16,10 @@ namespace LendWeb.ViewModels.Users
         public UserDTO User { get; set; }
         public LendObjectDTO Object { get; set; }
     }
+
+    public class SearchPageModel
+    {
+        public string Search { get; set; }
+        public IList<UserDTO> Users { get; set; }
+    }
 }

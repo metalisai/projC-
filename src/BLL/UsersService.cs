@@ -38,5 +38,10 @@ namespace BLL
         {
             return new UserDTO(_repos.UserRepository.FindById(id));
         }
+
+        public IList<UserDTO> SearchUsersByName(string name)
+        {
+            return _repos.UserRepository.SearchByName(name).Select(x => new UserDTO(x)).ToList();
+        }
     }
 }

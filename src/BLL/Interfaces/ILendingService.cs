@@ -19,7 +19,7 @@ namespace BLL.Interfaces
 
         void LendUserObjectToContact(string userId, string objectId, string otherUserName, string otherEmail);
 
-        void AddUserLendObject(string userId, LendObjectDTO lobject);
+        string AddUserLendObject(string userId, LendObjectDTO lobject);
 
         LendObjectDTO GetUserObject(string userId, string objectId);
 

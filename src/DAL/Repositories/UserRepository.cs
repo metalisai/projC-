@@ -40,6 +40,10 @@ namespace DAL.Repositories
         public void AddUser(User user)
         {
             var collection = _db.GetCollection<BsonDocument>("Users");
+            if(user.Joined == null)
+            {
+                user.Joined = DateTime.Now;
+            }
             var doc = user.ToBsonDocument();
             collection.InsertOne(doc);
             user.Id = doc["_id"].ToString();
@@ -177,6 +181,14 @@ namespace DAL.Repositories
         public IEnumerable<IdentityUserClaim> UpdateUserClaims(User user, IdentityUserClaim oldclaim, IdentityUserClaim newclaim)
         {
             throw new NotImplementedException();
+        }
+
+        public IList<User> SearchByName(string name)
+        {
+            var collection = _db.GetCollection<User>("Users");
+
+            var filter = Builders<User>.Filter.Regex("NormalizedUserName", new BsonRegularExpression(name.ToUpper()));
+            return collection.Find(filter).Limit(20).ToList();
         }
     }
 }

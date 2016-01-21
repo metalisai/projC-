@@ -124,9 +124,9 @@ namespace BLL
             }
         }
 
-        public void AddUserLendObject(string userId, LendObjectDTO lobject)
+        public string AddUserLendObject(string userId, LendObjectDTO lobject)
         {
-            _repos.LendObjectRepository.Add(userId, lobject.ToLendObject());
+            return _repos.LendObjectRepository.Add(userId, lobject.ToLendObject());
         }
 
         public LendObjectDTO GetUserObject(string userId, string objectId)

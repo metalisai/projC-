@@ -7,51 +7,67 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Your lendable objects</h2>
+<div class="col-md-12">
+    <div class="col-md-6">
+        <h2>@Model.ShowObject.Name</h2>
+        <table class="table">
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.ShowObject.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ShowObject.Name)
+                </td>
 
-<table class="table">
-    <tr>
-        <td>
-            @Html.DisplayNameFor(model => model.ShowObject.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(model => model.ShowObject.Name)
-        </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.ShowObject.Added)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ShowObject.Added)
+                </td>
+            </tr>
+            @foreach (var item in Model.ShowObject.Properties)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.PropertyName)
+                    </td>
+                    <td>
+                        @item.ToString()
+                    </td>
+                </tr>
+            }
+        </table>
 
-    </tr>
-    <tr>
-        <td>
-            @Html.DisplayNameFor(model => model.ShowObject.Added)
-        </td>
-        <td>
-            @Html.DisplayFor(model => model.ShowObject.Added)
-        </td>
-    </tr>
-    @foreach (var item in Model.ShowObject.Properties)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => item.PropertyName)
-            </td>
-            <td>
-                @item.ToString()
-            </td>
-        </tr>
-    }
-</table>
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addPropertyModal">Add property</button>
+    </div>
 
-@foreach (var item in Model.ShowObject.Images)
-{
-    <img class="object-image" src="~/uploads/@item"/>
-}
+    <div class="col-md-6">
+        @if (Model.ShowObject.Images.Count > 0)
+        {
+            <h2>Images</h2>
+            <div class="row">
+                @foreach (var item in Model.ShowObject.Images)
+                {
+                    <div class="col-md-6">
+                        <a href="~/uploads/@item" class="thumbnail">
+                            <img src="~/uploads/@item" />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
 
+        <h3>Upload images</h3>
 
-<form asp-action="PostFile" asp-route-id="@Model.ShowObject.Id.ToString()" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" id="file1" />
-    <input type="submit" value="submit" />
-</form>
-
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addPropertyModal">Add property</button>
+        <form asp-action="PostFile" asp-route-id="@Model.ShowObject.Id.ToString()" method="post" enctype="multipart/form-data">
+            <input type="file" name="files" id="file1" />
+            <input type="submit" value="Upload" />
+        </form>
+    </div>
+</div>
 
 <div id="addPropertyModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -62,7 +78,7 @@
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add new object</h4>
+                    <h4 class="modal-title">Add new property</h4>
                 </div>
 
                 <div class="modal-body">
@@ -77,7 +93,7 @@
                             <option value="Integer">Number</option>
                             <option value="Date">Date</option>
                         </select>
-                        <input asp-for="AddProperty.Date" type="date" class="form-control" ng-show="inputType == 'Date'"/>
+                        <input asp-for="AddProperty.Date" type="date" class="form-control" ng-show="inputType == 'Date'" />
                         <input asp-for="AddProperty.Number" type="number" class="form-control" ng-show="inputType == 'Integer'" />
                         <input asp-for="AddProperty.Text" type="text" class="form-control" ng-show="inputType == 'Text'" />
                     </div>
