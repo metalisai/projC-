@@ -73,6 +73,7 @@ namespace LendWeb.Controllers
         {
             LendObjectDTO lObject;
 
+            // make sure the request is valid
             if (id == null)
             {
                 return HttpNotFound();
@@ -102,20 +103,25 @@ namespace LendWeb.Controllers
                 return RedirectToAction("Index");
             }
  
+            // loop files (we only have one anyway...)
             foreach (var f in files)
             {
+                // TODO: move to configuration
                 string filePath = _hostingEnvironment.ApplicationBasePath + "\\wwwroot\\uploads\\";
+
+                // make directory for uploads if doesn't exist
                 if(!Directory.Exists(filePath))
                 {
                     Directory.CreateDirectory(filePath);
                 }
-
+                // is it a png?
                 if (f.ContentType == "image/png")
                 {
                     string fileName = Guid.NewGuid() + ".png";
                     await f.SaveAsAsync(Path.Combine(filePath, fileName));
                     _lService.AddImageToLendObject(GetUserId(), id, fileName);
                 }
+                // TODO: show error to player if wasn't png or something went wrong!
             }
             return RedirectToAction("Show",new { id = id });
         }
@@ -133,12 +139,6 @@ namespace LendWeb.Controllers
                 ObjectId = id
             };
             
-            /*LendObject lendObject = _context.LendObject.Single(m => m.Id == id);
-            if (lendObject == null)
-            {
-                return HttpNotFound();
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "User", lendObject.UserId);*/
             return View("Lend",model);
         }
 
@@ -146,9 +146,10 @@ namespace LendWeb.Controllers
         public IActionResult MarkReturned(string id)
         {
             LendObjectDTO lobject;
-            if (id != null)
+            if (id != null) // id specified?
             {
                 lobject = _lService.GetUserObject(GetUserId(), id);
+                // object exists and is avaiable?
                 if(lobject != null && lobject.Status != LendObjectDTO.LendObjectStatus.Available)
                 {
                     _lService.UserObjectReturned(GetUserId(), id);
@@ -164,6 +165,7 @@ namespace LendWeb.Controllers
         public IActionResult AddObjectProperty(ShowModel model)
         {
             object propertyToAdd;
+            // specify type
             switch(model.AddPropertyType)
             {
                 case LendObject.LoProperty.LoPropertyType.Date:
@@ -195,20 +197,21 @@ namespace LendWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-
+                // the object doesnt exist
                 if (_lService.GetUserObject(GetUserId(),model.ObjectId) == null)
                 {
                     return HttpNotFound();
                 }
-
+                // other user is specified?
                 if (!string.IsNullOrEmpty(model.LendToUser))
                 {
+                    // other user exists?
                     if (_uService.UserWithNameExists(model.LendToUser))
                     {
                         _lService.LendUserObject(GetUserId(), model.ObjectId, model.LendToUser);
                         return RedirectToAction("Index");
                     }
-                    else
+                    else // doesn't exist
                     {
                         ModelState.AddModelError("LendToUser", "User " + model.LendToUser + " does'nt exist!");
                         return View("Lend",new LendModel(model) { Borrower = LendModel.BorrowerType.User });
@@ -221,15 +224,18 @@ namespace LendWeb.Controllers
         [HttpPost]
         public IActionResult LendToContact(LendToContactModel model)
         {
+            // object not specified or doesn't exist
             if (string.IsNullOrEmpty(model.ObjectId) || _lService.GetUserObject(GetUserId(), model.ObjectId) == null)
             {
                 return HttpNotFound();
             }
+            // contact not specified
             if (string.IsNullOrEmpty(model.LendToName))
             {
                 ModelState.AddModelError(string.Empty, "Name field must be filled!");
                 return View("Lend", new LendModel(model) { Borrower = LendModel.BorrowerType.Contact });
             }
+            // contact email not specified
             if (string.IsNullOrEmpty(model.LendToEmail))
             {
                 ModelState.AddModelError(string.Empty, "Email field must be filled!");

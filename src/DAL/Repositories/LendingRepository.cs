@@ -39,14 +39,14 @@ namespace DAL.Repositories
         public IList<Lending> GetUserLendings(string userId)
         {
             var collection = _db.GetCollection<User>("Users");
-            var ret = collection.Find(x => x.Id == userId).Project(x => x.Lendings).ToList().FirstOrDefault();
+            var ret = collection.Find(x => x.Id == userId).Project(x => x.Lendings).FirstOrDefault().OrderByDescending(x => x.LentAt).ToList();
             return ret ?? new List<Lending>();
         }
 
         public IList<Lending> GetUserBorrowings(string userId)
         {
             var collection = _db.GetCollection<User>("Users");
-            var ret = collection.Find(x => x.Id == userId).Project(x => x.Borrowings).ToList().FirstOrDefault();
+            var ret = collection.Find(x => x.Id == userId).Project(x => x.Borrowings).FirstOrDefault().OrderByDescending(x => x.LentAt).ToList();
             return ret ?? new List<Lending>();
         }
 
@@ -63,13 +63,6 @@ namespace DAL.Repositories
             var ret = collection.Find(x => x.Id == userId).Project(x => x.Borrowings.Where(y => y.Id == lendingId)).FirstOrDefault().ToList().FirstOrDefault();
             return ret;
         }
-
-        /*public IList<Lending> GetUserBorrowing(string userId, string lendingId)
-        {
-            var collection = _db.GetCollection<User>("Users");
-            var ret = collection.Find(x => x.Id == userId).Project(x => x.Borrowings).ToList().FirstOrDefault();
-            return ret ?? new List<Lending>();
-        }*/
 
         public void MarkRetured(string userId, string lendObjectId)
         {

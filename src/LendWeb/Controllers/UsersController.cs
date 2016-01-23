@@ -52,6 +52,7 @@ namespace LendWeb.Controllers
         [HttpPost]
         public IActionResult Index(SearchPageModel model)
         {
+            // search box filled?
             if (!string.IsNullOrEmpty(model.Search))
             {
                 model.Users = _uService.SearchUsersByName(model.Search);
@@ -61,6 +62,7 @@ namespace LendWeb.Controllers
 
         public IActionResult Profile(string id)
         {
+            // data valid and user exists?
             if(string.IsNullOrEmpty(id) || !_uService.UserWithIdExists(id))
             {
                 return HttpNotFound();
@@ -72,11 +74,14 @@ namespace LendWeb.Controllers
 
         public IActionResult Object(string id, string objectId)
         {
+            // data valid?
             if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(objectId))
             {
+                // user exists?
                 UserDTO user = _uService.FindUserById(id);
                 if (user != null)
                 {
+                    // object exists?
                     var obj = _lService.GetUserObject(id, objectId);
                     if (obj != null)
                     {

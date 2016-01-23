@@ -12,10 +12,12 @@ namespace BLL
     public class LendingService : ILendingService
     {
         IRepositoryProvider _repos;
+        ILogService _logS;
 
-        public LendingService(IRepositoryProvider repos)
+        public LendingService(IRepositoryProvider repos, ILogService logs)
         {
             _repos = repos;
+            _logS = logs;
         }
 
         private string GetLendingStatus(string userId, Lending lending)
@@ -102,6 +104,8 @@ namespace BLL
                 {
                     _repos.LendObjectRepository.SetLendObjectLending(userId, objectId, lending.Id);
                     _repos.LendObjectRepository.SetLendObjectBorrowing(userId, objectId, borrowerLending.Id);
+                    _logS.LogUserAction(userId, "Lent object to " + otherUser.UserName);
+                    _logS.LogUserAction(otherUser.Id, "Borrowed object from " + _repos.UserRepository.FindById(userId).UserName);
                 }
             }
         }
@@ -121,17 +125,20 @@ namespace BLL
             if (result)
             {
                 _repos.LendObjectRepository.SetLendObjectLending(userId, objectId, lending.Id);
+                _logS.LogUserAction(userId, "Lent object to contact named " + otherUserName);
             }
         }
 
         public string AddUserLendObject(string userId, LendObjectDTO lobject)
         {
+            _logS.LogUserAction(userId, "Added object " + lobject.Name);
             return _repos.LendObjectRepository.Add(userId, lobject.ToLendObject());
         }
 
         public LendObjectDTO GetUserObject(string userId, string objectId)
         {
             var obj = _repos.LendObjectRepository.GetUserObject(userId, objectId);
+            // add status if object exists
             if (obj != null)
                 return new LendObjectDTO(_repos.LendObjectRepository.GetUserObject(userId, objectId))
                 {
@@ -143,16 +150,19 @@ namespace BLL
 
         public void UserObjectReturned(string userId, string objectId)
         {
+            _logS.LogUserAction(userId, "Marked as returned: " + _repos.LendObjectRepository.GetUserObject(userId, objectId).Name);
             _repos.LendingRepository.MarkRetured(userId, objectId);
         }
 
         public void AddImageToLendObject(string userId, string objectId, string fileName)
         {
+            _logS.LogUserAction(userId, "Added image to " + _repos.LendObjectRepository.GetUserObject(userId, objectId).Name);
             _repos.LendObjectRepository.AddImageToLendObject(userId, objectId, fileName);
         }
 
         public void AddPropertyToLendObject(string userId, string objectId, object property)
         {
+            // NOTE: logging pointless??
             _repos.LendObjectRepository.AddPropertyToLendObject(userId, objectId, property);
         }
     }

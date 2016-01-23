@@ -10,5 +10,6 @@ namespace DAL.Interfaces
         IUserRepository UserRepository { get; }
         ILendingRepository LendingRepository { get; }
         ILendObjectRepository LendObjectRepository { get; }
+        ILogRepository LogRepository { get; }
     }
 }

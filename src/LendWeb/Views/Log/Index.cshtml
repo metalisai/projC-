@@ -1,0 +1,19 @@
+@using LendWeb.ViewModels.Logs
+
+@model LogsModel
+
+@{
+    ViewData["Title"] = "Your action log";
+}
+
+<h2>Your action log</h2>
+
+<table class="table">
+@foreach (var entry in Model.LogEntries)
+{
+    <tr>
+        <td>@entry.Created</td>
+        <td>@entry.Description</td>
+    </tr>
+}
+</table>

@@ -78,6 +78,7 @@ namespace LendWeb
             services.AddScoped<IRepositoryProvider, RepositoryProvider>();
             services.AddScoped<ILendingService, LendingService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<ILogService, LogService>();
 
             services.Configure<MongoDBConnectionSettings>(Configuration.GetSection("MongoDBConnectionSettings"));
             //services.

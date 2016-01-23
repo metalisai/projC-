@@ -14,14 +14,6 @@ namespace DAL.Repositories
         IMongoDBClient _client;
         IMongoDatabase _db;
 
-        [Flags]
-        public enum UserInclude
-        {
-            Logins = 0,
-            Claims = 1,
-            Roles = 2
-        }
-
         public UserRepository(IMongoDBClient dbClient)
         {
             _client = dbClient;
