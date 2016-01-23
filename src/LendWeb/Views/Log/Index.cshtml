@@ -8,12 +8,21 @@
 
 <h2>Your action log</h2>
 
-<table class="table">
-@foreach (var entry in Model.LogEntries)
+@if (Model.LogEntries.Count() > 0)
 {
-    <tr>
-        <td>@entry.Created</td>
-        <td>@entry.Description</td>
-    </tr>
+    <table class="table">
+        @foreach (var entry in Model.LogEntries)
+        {
+            <tr>
+                <td>@entry.Created</td>
+                <td>@entry.Description</td>
+            </tr>
+        }
+    </table>
 }
-</table>
+else
+{
+    <div class="alert alert-info" style="max-width: 500px;">
+        You haven't performed any actions!
+    </div>
+}
