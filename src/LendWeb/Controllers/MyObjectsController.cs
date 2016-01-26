@@ -100,7 +100,6 @@ namespace LendWeb.Controllers
         {
             LendObjectDTO lObject;
 
-            // make sure the request is valid
             if (id == null)
             {
                 return HttpNotFound();
@@ -113,8 +112,9 @@ namespace LendWeb.Controllers
                     return HttpNotFound();
                 }
             }
-
-            _lService.RemoveUserLendObject(GetUserId(), id);
+            if (lObject.Status != LendObjectDTO.LendObjectStatus.Lent)
+                // TODO: error message
+                _lService.RemoveUserLendObject(GetUserId(), id);
 
             return RedirectToAction("Index");
         }
