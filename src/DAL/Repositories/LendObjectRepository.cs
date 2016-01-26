@@ -48,7 +48,11 @@ namespace DAL.Repositories
 
         public void Remove(string userId, string objectId)
         {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<BsonDocument>("Users");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = Builders<BsonDocument>.Filter.And(builder.Eq("_id", new ObjectId(userId)), builder.Eq("LendObjects._id", new ObjectId(objectId)));
+            var update = Builders<BsonDocument>.Update.Set("LendObjects.$.Listed", false);
+            collection.UpdateOne(filter, update);
         }
 
         public void SetLendObjectLending(string userId, string objectId, string lendingId)

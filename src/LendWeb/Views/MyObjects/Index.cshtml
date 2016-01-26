@@ -20,6 +20,7 @@
             </th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
 
         @foreach (var item in Model.MyObjects)
@@ -38,6 +39,9 @@
                 </td>
                 <td>
                     <a asp-action="Show" asp-route-id="@item.Id.ToString()">Details</a>
+                </td>
+                <td>
+                    <a asp-action="Remove" asp-route-id="@item.Id.ToString()">Remove</a>
                 </td>
             </tr>
 

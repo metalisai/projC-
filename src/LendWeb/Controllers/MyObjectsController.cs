@@ -47,7 +47,7 @@ namespace LendWeb.Controllers
             string userId = GetUserId();
 
             var vm = new MyObjectsModel {
-                MyObjects = _lService.GetUserLendObjects(userId),
+                MyObjects = _lService.GetUserLendObjects(userId).Where(x => x.Listed == true),
                 MyLendings = _lService.GetUserLendings(userId),
                 MyBorrowings = _lService.GetUserBorrowings(userId),
             };
@@ -93,6 +93,30 @@ namespace LendWeb.Controllers
             };
 
             return View("Show", model);
+        }
+
+        [HttpGet]
+        public IActionResult Remove(string id)
+        {
+            LendObjectDTO lObject;
+
+            // make sure the request is valid
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                lObject = _lService.GetUserObject(GetUserId(), id);
+                if (lObject == null)
+                {
+                    return HttpNotFound();
+                }
+            }
+
+            _lService.RemoveUserLendObject(GetUserId(), id);
+
+            return RedirectToAction("Index");
         }
 
         public async Task<ActionResult> PostFile(string id, IList<IFormFile> files)

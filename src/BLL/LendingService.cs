@@ -165,5 +165,11 @@ namespace BLL
             // NOTE: logging pointless??
             _repos.LendObjectRepository.AddPropertyToLendObject(userId, objectId, property);
         }
+
+        public void RemoveUserLendObject(string userId, string objectId)
+        {
+            _logS.LogUserAction(userId, "Removed object " + _repos.LendObjectRepository.GetUserObject(userId, objectId).Name);
+            _repos.LendObjectRepository.Remove(userId, objectId);
+        }
     }
 }

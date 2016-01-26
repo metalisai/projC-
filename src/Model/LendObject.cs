@@ -62,5 +62,6 @@ namespace Model
         public string CurrentBorrowing { get; set; }
         public IList<string> Images { get; set; } = new List<string>();
         public IList<LoProperty> Properties = new List<LoProperty>();
+        public bool Listed { get; set; } = true;
     }
 }

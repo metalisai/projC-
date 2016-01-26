@@ -21,6 +21,8 @@ namespace BLL.Interfaces
 
         string AddUserLendObject(string userId, LendObjectDTO lobject);
 
+        void RemoveUserLendObject(string userId, string objectId);
+
         LendObjectDTO GetUserObject(string userId, string objectId);
 
         void UserObjectReturned(string userId, string objectId);
